@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "183086333058",
+    "firebase_url": "https://electricalappliancestore-2093f.firebaseio.com",
+    "project_id": "electricalappliancestore-2093f",
+    "storage_bucket": "electricalappliancestore-2093f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:183086333058:android:d4b0a173d640c40c51089b",
+        "android_client_info": {
+          "package_name": "com.naemys.electricalappliancestore"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "183086333058-eq8531g4kdipmfvkt9t7mnalks736shg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.naemys.electricalappliancestore",
+            "certificate_hash": "0b778a551dc95200247b09ea1cfd197a0a745978"
+          }
+        },
+        {
+          "client_id": "183086333058-u8nggu5bslvkfqjvkq3fu30epu2pts1e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0OiD_sEAi2Pt3oVNMcO3ht4Yc9E0Btu0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "183086333058-u8nggu5bslvkfqjvkq3fu30epu2pts1e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

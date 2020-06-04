@@ -1,0 +1,64 @@
+package com.naemys.electricalappliancestore.adapters;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.naemys.electricalappliancestore.R;
+import com.naemys.electricalappliancestore.models.Delivery;
+
+import java.util.List;
+
+public class DeliveryAdapter extends RecyclerView.Adapter<DeliveryAdapter.DeliveryViewHolder> {
+
+    private Context context;
+    private List<Delivery> deliveries;
+
+    public DeliveryAdapter(Context context, List<Delivery> deliveries) {
+        this.context = context;
+        this.deliveries = deliveries;
+    }
+
+    @NonNull
+    @Override
+    public DeliveryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_delivery, parent, false);
+        return new DeliveryViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull DeliveryViewHolder holder, int position) {
+        Delivery delivery = deliveries.get(position);
+
+        holder.idTextView.setText(delivery.getId());
+        holder.addressTextView.setText(delivery.getAddress());
+        holder.deliveredTextView.setText(delivery.getDelivered());
+        holder.dateTimeTextView.setText(delivery.getDateTime());
+        holder.orderIdTextView.setText(delivery.getOrderId());
+    }
+
+    @Override
+    public int getItemCount() {
+        return deliveries.size();
+    }
+
+    public static class DeliveryViewHolder extends RecyclerView.ViewHolder {
+
+        TextView idTextView, addressTextView, deliveredTextView, dateTimeTextView, orderIdTextView;
+
+        public DeliveryViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            idTextView = itemView.findViewById(R.id.idTextView);
+            addressTextView = itemView.findViewById(R.id.addressTextView);
+            deliveredTextView = itemView.findViewById(R.id.deliveredTextView);
+            dateTimeTextView = itemView.findViewById(R.id.dateTimeTextView);
+            orderIdTextView = itemView.findViewById(R.id.orderIdTextView);
+        }
+    }
+}
