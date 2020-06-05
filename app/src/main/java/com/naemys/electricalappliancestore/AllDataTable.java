@@ -39,14 +39,19 @@ import com.naemys.electricalappliancestore.models.Review;
 import com.naemys.electricalappliancestore.models.Sale;
 import com.naemys.electricalappliancestore.models.Supplier;
 import com.naemys.electricalappliancestore.models.TypeOfGoods;
+import com.naemys.electricalappliancestore.request.CustomJsonObjectRequest;
 import com.naemys.electricalappliancestore.units.Unit;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class AllDataTable extends AppCompatActivity {
 
@@ -153,15 +158,12 @@ public class AllDataTable extends AppCompatActivity {
                     break;
             }
         }
-
-
-
     }
 
     public void addData(View view) {
         Intent intent = new Intent(AllDataTable.this, AddDataActivity.class);
         intent.putExtra(Unit.TABLE_EXTRA, table);
-        startActivityForResult(intent, 0);
+        startActivity(intent);
     }
 
     public void updateData(Cart cart) {
@@ -173,451 +175,126 @@ public class AllDataTable extends AppCompatActivity {
         intent.putExtra(Unit.Carts._QUANTITY, cart.getQuantity());
         intent.putExtra(Unit.Carts._GOODS_ID, cart.getGoodsId());
 
-        startActivityForResult(intent, 1);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 0 && resultCode == RESULT_OK) {
-            if (table.equals(Unit.Carts.TABLE_NAME)) {
-                list = new ArrayList();
-
-                setCarts();
-
-                recyclerAdapter.notifyDataSetChanged();
-            } else if (table.equals(Unit.Clients.TABLE_NAME)) {
-                list = new ArrayList();
-
-                setClients();
-                recyclerAdapter.notifyDataSetChanged();
-            }
-
-        }
+        startActivity(intent);
     }
 
     private void setCarts() {
-        JsonObjectRequest objectRequest = new JsonObjectRequest(JsonObjectRequest.Method.GET,
+        CustomJsonObjectRequest objectRequest = new CustomJsonObjectRequest (
                 Unit.Carts.URL_GET_ALL,
-                null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray array = response.getJSONArray(Unit.Carts.TABLE_NAME);
-
-                            for (int i = 0; i < array.length(); i++) {
-                                JSONObject cartJsonObject = array.getJSONObject(i);
-
-                                String id = cartJsonObject.getString(Unit._ID);
-                                String goodsId = cartJsonObject.getString(Unit.Carts._GOODS_ID);
-                                String quantity = cartJsonObject.getString(Unit.Carts._QUANTITY);
-                                String orderId = cartJsonObject.getString(Unit.Carts._ORDER_ID);
-
-                                Cart cart = new Cart(id, goodsId, quantity, orderId);
-
-                                list.add(cart);
-                                recyclerAdapter.notifyDataSetChanged();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                });
+                new Cart(),
+                list,
+                recyclerAdapter
+        );
 
         requestQueue.add(objectRequest);
     }
 
     private void setClients() {
-        JsonObjectRequest objectRequest = new JsonObjectRequest(JsonObjectRequest.Method.GET,
+        CustomJsonObjectRequest objectRequest = new CustomJsonObjectRequest (
                 Unit.Clients.URL_GET_ALL,
-                null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray array = response.getJSONArray("client");
-
-                            for (int i = 0; i < array.length(); i++) {
-                                JSONObject jsonObject = array.getJSONObject(i);
-
-                                String id = jsonObject.getString(Unit._ID);
-                                String firstName = jsonObject.getString(Unit.Clients._FIRST_NAME);
-                                String lastName = jsonObject.getString(Unit.Clients._LAST_NAME);
-                                String middleName = jsonObject.getString(Unit.Clients._MIDDLE_NAME);
-                                String discount = jsonObject.getString(Unit.Clients._DISCOUNT);
-
-
-                                Client client = new Client(id, firstName, lastName, middleName, discount);
-
-                                list.add(client);
-                                recyclerAdapter.notifyDataSetChanged();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                });
+                new Client(),
+                list,
+                recyclerAdapter
+        );
 
         requestQueue.add(objectRequest);
     }
 
     private void setDelivery() {
-        JsonObjectRequest objectRequest = new JsonObjectRequest(JsonObjectRequest.Method.GET,
+        CustomJsonObjectRequest objectRequest = new CustomJsonObjectRequest (
                 Unit.Delivery.URL_GET_ALL,
-                null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray array = response.getJSONArray(Unit.Delivery.TABLE_NAME);
-
-                            for (int i = 0; i < array.length(); i++) {
-                                JSONObject jsonObject = array.getJSONObject(i);
-
-                                String id = jsonObject.getString(Unit._ID);
-                                String address = jsonObject.getString(Unit.Delivery._ADDRESS);
-                                String delivered = jsonObject.getString(Unit.Delivery._DELIVERED);
-                                String dateTime = jsonObject.getString(Unit.Delivery._DATE_TIME);
-                                String orderId = jsonObject.getString(Unit.Delivery._ORDER_ID);
-
-
-                                Delivery delivery = new Delivery(id, address, delivered, dateTime, orderId);
-
-                                list.add(delivery);
-                                recyclerAdapter.notifyDataSetChanged();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                });
+                new Delivery(),
+                list,
+                recyclerAdapter
+        );
 
         requestQueue.add(objectRequest);
     }
 
     private void setGoods() {
-        JsonObjectRequest objectRequest = new JsonObjectRequest(JsonObjectRequest.Method.GET,
+        CustomJsonObjectRequest objectRequest = new CustomJsonObjectRequest (
                 Unit.Goods.URL_GET_ALL,
-                null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray array = response.getJSONArray(Unit.Goods.TABLE_NAME);
-
-                            for (int i = 0; i < array.length(); i++) {
-                                JSONObject jsonObject = array.getJSONObject(i);
-
-                                String id = jsonObject.getString(Unit._ID);
-                                String name = jsonObject.getString(Unit.Goods._NAME);
-                                String typeId = jsonObject.getString(Unit.Goods._TYPE_ID);
-                                String quantityInStock = jsonObject.getString(Unit.Goods._QUANTITY_IN_STOCK);
-                                String description = jsonObject.getString(Unit.Goods._DESCRIPTION);
-
-
-                                Goods goods = new Goods(id, name, typeId, quantityInStock, description);
-
-                                list.add(goods);
-                                recyclerAdapter.notifyDataSetChanged();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                });
+                new Goods(),
+                list,
+                recyclerAdapter
+        );
 
         requestQueue.add(objectRequest);
     }
 
     private void setOrders() {
-        JsonObjectRequest objectRequest = new JsonObjectRequest(JsonObjectRequest.Method.GET,
+        CustomJsonObjectRequest objectRequest = new CustomJsonObjectRequest (
                 Unit.Orders.URL_GET_ALL,
-                null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray array = response.getJSONArray(Unit.Orders.TABLE_NAME);
-
-                            for (int i = 0; i < array.length(); i++) {
-                                JSONObject jsonObject = array.getJSONObject(i);
-
-                                String id = jsonObject.getString(Unit._ID);
-                                String clientId = jsonObject.getString(Unit.Orders._CLIENT_ID);
-                                String paymentMethodId = jsonObject.getString(Unit.Orders._PAYMENT_METHOD_ID);
-                                String paid = jsonObject.getString(Unit.Orders._PAID);
-                                String dateTime = jsonObject.getString(Unit.Orders._DATE_TIME);
-
-
-                                Order order = new Order(id, clientId, paymentMethodId, paid, dateTime);
-
-                                list.add(order);
-                                recyclerAdapter.notifyDataSetChanged();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                });
+                new Order(),
+                list,
+                recyclerAdapter
+        );
 
         requestQueue.add(objectRequest);
     }
 
     private void setPaymentMethods() {
-        JsonObjectRequest objectRequest = new JsonObjectRequest(JsonObjectRequest.Method.GET,
+        CustomJsonObjectRequest objectRequest = new CustomJsonObjectRequest (
                 Unit.PaymentMethods.URL_GET_ALL,
-                null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray array = response.getJSONArray(Unit.PaymentMethods.TABLE_NAME);
-
-                            for (int i = 0; i < array.length(); i++) {
-                                JSONObject jsonObject = array.getJSONObject(i);
-
-                                String id = jsonObject.getString(Unit._ID);
-                                String name = jsonObject.getString(Unit.PaymentMethods._NAME);
-
-                                PaymentMethod paymentMethod = new PaymentMethod(id, name);
-
-                                list.add(paymentMethod);
-                                recyclerAdapter.notifyDataSetChanged();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                });
+                new PaymentMethod(),
+                list,
+                recyclerAdapter
+        );
 
         requestQueue.add(objectRequest);
     }
 
     private void setProcurement() {
-        JsonObjectRequest objectRequest = new JsonObjectRequest(JsonObjectRequest.Method.GET,
+        CustomJsonObjectRequest objectRequest = new CustomJsonObjectRequest (
                 Unit.Procurement.URL_GET_ALL,
-                null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray array = response.getJSONArray(Unit.Procurement.TABLE_NAME);
-
-                            for (int i = 0; i < array.length(); i++) {
-                                JSONObject jsonObject = array.getJSONObject(i);
-
-                                String id = jsonObject.getString(Unit._ID);
-                                String goodsId = jsonObject.getString(Unit.Procurement._GOODS_ID);
-                                String supplierId = jsonObject.getString(Unit.Procurement._SUPPLIER_ID);
-                                String price = jsonObject.getString(Unit.Procurement._PRICE);
-
-                                Procurement procurement = new Procurement(id, goodsId, supplierId, price);
-
-                                list.add(procurement);
-                                recyclerAdapter.notifyDataSetChanged();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                });
+                new Procurement(),
+                list,
+                recyclerAdapter
+        );
 
         requestQueue.add(objectRequest);
     }
 
     private void setReviews() {
-        JsonObjectRequest objectRequest = new JsonObjectRequest(JsonObjectRequest.Method.GET,
+        CustomJsonObjectRequest objectRequest = new CustomJsonObjectRequest (
                 Unit.Reviews.URL_GET_ALL,
-                null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray array = response.getJSONArray(Unit.Reviews.TABLE_NAME);
-
-                            for (int i = 0; i < array.length(); i++) {
-                                JSONObject jsonObject = array.getJSONObject(i);
-
-                                String id = jsonObject.getString(Unit._ID);
-                                String goodsId = jsonObject.getString(Unit.Reviews._GOODS_ID);
-                                String clientId = jsonObject.getString(Unit.Reviews._CLIENT_ID);
-                                String reviewText = jsonObject.getString(Unit.Reviews._REVIEW_TEXT);
-                                String rating = jsonObject.getString(Unit.Reviews._RATING);
-
-                                Review review = new Review(id, goodsId, clientId, reviewText, rating);
-
-                                list.add(review);
-                                recyclerAdapter.notifyDataSetChanged();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                });
+                new Review(),
+                list,
+                recyclerAdapter
+        );
 
         requestQueue.add(objectRequest);
     }
 
     private void setSale() {
-        JsonObjectRequest objectRequest = new JsonObjectRequest(JsonObjectRequest.Method.GET,
+        CustomJsonObjectRequest objectRequest = new CustomJsonObjectRequest (
                 Unit.Sale.URL_GET_ALL,
-                null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray array = response.getJSONArray(Unit.Sale.TABLE_NAME);
-
-                            for (int i = 0; i < array.length(); i++) {
-                                JSONObject jsonObject = array.getJSONObject(i);
-
-                                String id = jsonObject.getString(Unit._ID);
-                                String goodsId = jsonObject.getString(Unit.Sale._GOODS_ID);
-                                String price = jsonObject.getString(Unit.Sale._PRICE);
-                                String discount = jsonObject.getString(Unit.Sale._DISCOUNT);
-
-
-                                Sale sale = new Sale(id, goodsId, price, discount);
-
-                                list.add(sale);
-                                recyclerAdapter.notifyDataSetChanged();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                });
+                new Sale(),
+                list,
+                recyclerAdapter
+        );
 
         requestQueue.add(objectRequest);
     }
 
     private void setSupplier() {
-        JsonObjectRequest objectRequest = new JsonObjectRequest(JsonObjectRequest.Method.GET,
+        CustomJsonObjectRequest objectRequest = new CustomJsonObjectRequest (
                 Unit.Suppliers.URL_GET_ALL,
-                null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray array = response.getJSONArray(Unit.Suppliers.TABLE_NAME);
-
-                            for (int i = 0; i < array.length(); i++) {
-                                JSONObject jsonObject = array.getJSONObject(i);
-
-                                String id = jsonObject.getString(Unit._ID);
-                                String firstName = jsonObject.getString(Unit.Suppliers._FIRST_NAME);
-                                String lastName = jsonObject.getString(Unit.Suppliers._LAST_NAME);
-                                String middleName = jsonObject.getString(Unit.Suppliers._MIDDLE_NAME);
-                                String phone = jsonObject.getString(Unit.Suppliers._PHONE);
-
-                                Supplier supplier = new Supplier(id, firstName, lastName, middleName, phone);
-
-                                list.add(supplier);
-                                recyclerAdapter.notifyDataSetChanged();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                });
+                new Supplier(),
+                list,
+                recyclerAdapter
+        );
 
         requestQueue.add(objectRequest);
     }
 
     private void setTypesOfGoods() {
-        JsonObjectRequest objectRequest = new JsonObjectRequest(JsonObjectRequest.Method.GET,
+        CustomJsonObjectRequest objectRequest = new CustomJsonObjectRequest (
                 Unit.TypesOfGoods.URL_GET_ALL,
-                null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray array = response.getJSONArray("types");
-
-                            for (int i = 0; i < array.length(); i++) {
-                                JSONObject jsonObject = array.getJSONObject(i);
-
-                                String id = jsonObject.getString(Unit._ID);
-                                String name = jsonObject.getString(Unit.TypesOfGoods._NAME);
-
-                                TypeOfGoods typeOfGoods = new TypeOfGoods(id, name);
-
-                                list.add(typeOfGoods);
-                                recyclerAdapter.notifyDataSetChanged();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                });
+                new TypeOfGoods(),
+                list,
+                recyclerAdapter
+        );
 
         requestQueue.add(objectRequest);
     }

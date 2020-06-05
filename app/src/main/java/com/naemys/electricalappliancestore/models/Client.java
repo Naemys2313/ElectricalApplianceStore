@@ -1,6 +1,10 @@
 package com.naemys.electricalappliancestore.models;
 
-public class Client {
+import com.naemys.electricalappliancestore.units.Unit;
+
+import java.util.Map;
+
+public class Client extends Model<Client> {
     private String id, firstName, lastName, middleName, discount;
 
     public Client() {
@@ -52,5 +56,22 @@ public class Client {
 
     public void setDiscount(String discount) {
         this.discount = discount;
+    }
+
+    @Override
+    public Client fromMap(Map<String, String> m) {
+        Client client = new Client();
+        client.setId(m.get(Unit._ID));
+        client.setFirstName(m.get(Unit.Clients._FIRST_NAME));
+        client.setLastName(m.get(Unit.Clients._LAST_NAME));
+        client.setMiddleName(m.get(Unit.Clients._MIDDLE_NAME));
+        client.setDiscount(m.get(Unit.Clients._DISCOUNT));
+
+        return client;
+    }
+
+    @Override
+    public String getTableName() {
+        return "client";
     }
 }

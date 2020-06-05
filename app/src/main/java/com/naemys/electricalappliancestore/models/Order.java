@@ -1,6 +1,10 @@
 package com.naemys.electricalappliancestore.models;
 
-public class Order {
+import com.naemys.electricalappliancestore.units.Unit;
+
+import java.util.Map;
+
+public class Order extends Model<Order> {
     private String id, clientId, paymentMethodId, paid, dateTime;
 
     public Order() {
@@ -52,5 +56,22 @@ public class Order {
 
     public void setDateTime(String dateTime) {
         this.dateTime = dateTime;
+    }
+
+    @Override
+    public Order fromMap(Map<String, String> m) {
+        Order order = new Order();
+        order.setId(m.get(Unit._ID));
+        order.setClientId(m.get(Unit.Orders._CLIENT_ID));
+        order.setPaymentMethodId(m.get(Unit.Orders._PAYMENT_METHOD_ID));
+        order.setPaid(m.get(Unit.Orders._PAID));
+        order.setDateTime(m.get(Unit.Orders._DATE_TIME));
+
+        return order;
+    }
+
+    @Override
+    public String getTableName() {
+        return Unit.Orders.TABLE_NAME;
     }
 }

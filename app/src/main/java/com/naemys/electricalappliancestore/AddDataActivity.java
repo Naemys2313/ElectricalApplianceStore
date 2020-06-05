@@ -15,6 +15,7 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -23,6 +24,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.common.util.JsonUtils;
 import com.google.android.material.textfield.TextInputEditText;
 import com.naemys.electricalappliancestore.models.Cart;
 import com.naemys.electricalappliancestore.models.Client;
@@ -428,6 +430,7 @@ public class AddDataActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         Log.d(AddDataActivity.class.getSimpleName(), "onResponse: " + response);
+
                         if (response.equals("{\"success\":1,\"message\":\"Client successfully created.\"}")) {
                             Toast.makeText(AddDataActivity.this, "Client successfully created.", Toast.LENGTH_LONG).show();
                         } else {

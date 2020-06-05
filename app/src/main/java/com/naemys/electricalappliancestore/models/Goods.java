@@ -1,6 +1,10 @@
 package com.naemys.electricalappliancestore.models;
 
-public class Goods {
+import com.naemys.electricalappliancestore.units.Unit;
+
+import java.util.Map;
+
+public class Goods extends Model<Goods> {
     private String id, name, typeId, quantityInStock, description;
 
     public Goods() {
@@ -52,5 +56,21 @@ public class Goods {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Goods fromMap(Map<String, String> m) {
+        Goods goods = new Goods();
+        goods.setId(m.get(Unit._ID));
+        goods.setName(m.get(Unit.Goods._NAME));
+        goods.setTypeId(m.get(Unit.Goods._TYPE_ID));
+        goods.setQuantityInStock(m.get(Unit.Goods._QUANTITY_IN_STOCK));
+        goods.setDescription(m.get(Unit.Goods._DESCRIPTION));
+
+        return goods;
+    }
+
+    public String getTableName() {
+
+        return Unit.Goods.TABLE_NAME;
     }
 }

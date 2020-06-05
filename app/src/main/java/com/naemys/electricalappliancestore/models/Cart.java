@@ -1,6 +1,10 @@
 package com.naemys.electricalappliancestore.models;
 
-public class Cart {
+import com.naemys.electricalappliancestore.units.Unit;
+
+import java.util.Map;
+
+public class Cart extends Model<Cart> {
     private String id;
     private String goodsId;
     private String quantity;
@@ -46,5 +50,20 @@ public class Cart {
 
     public void setOrderId(String orderId) {
         this.orderId = orderId;
+    }
+
+    @Override
+    public Cart fromMap(Map<String, String> m) {
+        Cart cart = new Cart();
+        cart.setId(m.get(Unit._ID));
+        cart.setOrderId(m.get(Unit.Carts._ORDER_ID));
+        cart.setQuantity(m.get(Unit.Carts._QUANTITY));
+        cart.setGoodsId(m.get(Unit.Carts._GOODS_ID));
+
+        return cart;
+    }
+
+    public String getTableName() {
+        return Unit.Carts.TABLE_NAME;
     }
 }

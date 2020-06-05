@@ -1,6 +1,10 @@
 package com.naemys.electricalappliancestore.models;
 
-public class Supplier {
+import com.naemys.electricalappliancestore.units.Unit;
+
+import java.util.Map;
+
+public class Supplier extends Model<Supplier> {
 
     private String id, firstName, lastName, middleName, phone;
 
@@ -53,5 +57,22 @@ public class Supplier {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    @Override
+    public Supplier fromMap(Map<String, String> m) {
+        Supplier supplier = new Supplier();
+        supplier.setId(m.get(Unit._ID));
+        supplier.setFirstName(m.get(Unit.Suppliers._FIRST_NAME));
+        supplier.setLastName(m.get(Unit.Suppliers._LAST_NAME));
+        supplier.setMiddleName(m.get(Unit.Suppliers._MIDDLE_NAME));
+        supplier.setPhone(m.get(Unit.Suppliers._PHONE));
+
+        return supplier;
+    }
+
+    @Override
+    public String getTableName() {
+        return Unit.Suppliers.TABLE_NAME;
     }
 }

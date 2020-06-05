@@ -1,6 +1,11 @@
 package com.naemys.electricalappliancestore.models;
 
-public class Delivery {
+import com.naemys.electricalappliancestore.units.Unit;
+
+import java.util.Map;
+
+public class Delivery extends Model<Delivery> {
+
     private String id, address, delivered, dateTime, orderId;
 
     public Delivery() {
@@ -52,5 +57,23 @@ public class Delivery {
 
     public void setOrderId(String orderId) {
         this.orderId = orderId;
+    }
+
+    @Override
+    public Delivery fromMap(Map<String, String> m) {
+        Delivery delivery = new Delivery();
+
+        delivery.setId(m.get(Unit._ID));
+        delivery.setAddress(m.get(Unit.Delivery._ADDRESS));
+        delivery.setDelivered(m.get(Unit.Delivery._DELIVERED));
+        delivery.setDateTime(m.get(Unit.Delivery._DATE_TIME));
+        delivery.setOrderId(m.get(Unit.Delivery._ORDER_ID));
+
+        return delivery;
+    }
+
+    @Override
+    public String getTableName() {
+        return Unit.Delivery.TABLE_NAME;
     }
 }

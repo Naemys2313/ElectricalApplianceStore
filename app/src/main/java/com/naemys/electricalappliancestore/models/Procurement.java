@@ -1,6 +1,10 @@
 package com.naemys.electricalappliancestore.models;
 
-public class Procurement {
+import com.naemys.electricalappliancestore.units.Unit;
+
+import java.util.Map;
+
+public class Procurement extends Model<Procurement> {
 
     private String id, goodsId, supplierId, price;
 
@@ -44,5 +48,21 @@ public class Procurement {
 
     public void setPrice(String price) {
         this.price = price;
+    }
+
+    @Override
+    public Procurement fromMap(Map<String, String> m) {
+        Procurement procurement = new Procurement();
+        procurement.setId(m.get(Unit._ID));
+        procurement.setGoodsId(m.get(Unit.Procurement._GOODS_ID));
+        procurement.setSupplierId(m.get(Unit.Procurement._SUPPLIER_ID));
+        procurement.setPrice(m.get(Unit.Procurement._PRICE));
+
+        return procurement;
+    }
+
+    @Override
+    public String getTableName() {
+        return Unit.Procurement.TABLE_NAME;
     }
 }

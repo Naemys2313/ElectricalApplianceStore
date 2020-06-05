@@ -1,6 +1,10 @@
 package com.naemys.electricalappliancestore.models;
 
-public class Sale {
+import com.naemys.electricalappliancestore.units.Unit;
+
+import java.util.Map;
+
+public class Sale extends Model<Sale> {
     private String id, goodsId, price, discount;
 
     public Sale() {
@@ -44,6 +48,22 @@ public class Sale {
 
     public void setDiscount(String discount) {
         this.discount = discount;
+    }
+
+    @Override
+    public Sale fromMap(Map<String, String> m) {
+        Sale sale = new Sale();
+        sale.setId(m.get(Unit._ID));
+        sale.setGoodsId(m.get(Unit.Sale._GOODS_ID));
+        sale.setPrice(m.get(Unit.Sale._PRICE));
+        sale.setDiscount(m.get(Unit.Sale._DISCOUNT));
+
+        return sale;
+    }
+
+    @Override
+    public String getTableName() {
+        return Unit.Sale.TABLE_NAME;
     }
 }
 

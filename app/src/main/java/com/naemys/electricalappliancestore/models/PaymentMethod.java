@@ -1,6 +1,10 @@
 package com.naemys.electricalappliancestore.models;
 
-public class PaymentMethod {
+import com.naemys.electricalappliancestore.units.Unit;
+
+import java.util.Map;
+
+public class PaymentMethod extends Model<PaymentMethod> {
 
     private String id, name;
 
@@ -26,5 +30,19 @@ public class PaymentMethod {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public PaymentMethod fromMap(Map<String, String> m) {
+        PaymentMethod paymentMethod = new PaymentMethod();
+        paymentMethod.setId(m.get(Unit._ID));
+        paymentMethod.setName(m.get(Unit.PaymentMethods._NAME));
+
+        return paymentMethod;
+    }
+
+    @Override
+    public String getTableName() {
+        return Unit.PaymentMethods.TABLE_NAME;
     }
 }
