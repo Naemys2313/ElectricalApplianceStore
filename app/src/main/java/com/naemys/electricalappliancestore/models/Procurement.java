@@ -1,7 +1,10 @@
 package com.naemys.electricalappliancestore.models;
 
+import androidx.annotation.NonNull;
+
 import com.naemys.electricalappliancestore.units.Unit;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Procurement extends Model<Procurement> {
@@ -62,7 +65,25 @@ public class Procurement extends Model<Procurement> {
     }
 
     @Override
+    public Map<String, String> toMap(Boolean withId) {
+        Map<String, String> m = new HashMap<>();
+        if(withId)
+            m.put(Unit._ID, getId());
+        m.put(Unit.Procurement._GOODS_ID, getGoodsId());
+        m.put(Unit.Procurement._SUPPLIER_ID, getSupplierId());
+        m.put(Unit.Procurement._PRICE, getPrice());
+
+        return m;
+    }
+
+    @Override
     public String getTableName() {
         return Unit.Procurement.TABLE_NAME;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return getId();
     }
 }

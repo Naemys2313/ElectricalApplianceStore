@@ -1,7 +1,10 @@
 package com.naemys.electricalappliancestore.models;
 
+import androidx.annotation.NonNull;
+
 import com.naemys.electricalappliancestore.units.Unit;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Client extends Model<Client> {
@@ -71,7 +74,26 @@ public class Client extends Model<Client> {
     }
 
     @Override
+    public Map<String, String> toMap(Boolean withId) {
+        Map<String, String> m = new HashMap<>();
+        if(withId)
+            m.put(Unit._ID, getId());
+        m.put(Unit.Clients._FIRST_NAME, getFirstName());
+        m.put(Unit.Clients._LAST_NAME, getLastName());
+        m.put(Unit.Clients._MIDDLE_NAME, getMiddleName());
+        m.put(Unit.Clients._DISCOUNT, getDiscount());
+
+        return m;
+    }
+
+    @Override
     public String getTableName() {
         return "client";
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return getId() + " - [" + lastName + ", " + firstName + "]";
     }
 }

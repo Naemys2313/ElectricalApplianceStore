@@ -46,6 +46,12 @@ public class Unit {
         public static final String URL_CREATE =
                 "https://elecronicapplicatestore.000webhostapp.com/clients/create_clients.php";
 
+        public static final String URL_UPDATE =
+                "https://elecronicapplicatestore.000webhostapp.com/clients/update_client.php";
+
+        public static final String URL_DELETE =
+                "https://elecronicapplicatestore.000webhostapp.com/clients/delete_client.php";
+
     }
 
     public static class Delivery {
@@ -58,6 +64,15 @@ public class Unit {
 
         public static final String URL_GET_ALL =
                 "https://elecronicapplicatestore.000webhostapp.com/delivery/get_all_delivery.php";
+
+        public static final String URL_CREATE =
+                "https://elecronicapplicatestore.000webhostapp.com/delivery/create_delivery.php";
+
+        public static final String URL_UPDATE =
+                "https://elecronicapplicatestore.000webhostapp.com/delivery/update_delivery.php";
+
+        public static final String URL_DELETE =
+                "https://elecronicapplicatestore.000webhostapp.com/delivery/delete_delivery.php";
 
     }
 
@@ -72,6 +87,15 @@ public class Unit {
         public static final String URL_GET_ALL =
                 "https://elecronicapplicatestore.000webhostapp.com/goods/get_all_goods.php";
 
+        public static final String URL_CREATE =
+                "https://elecronicapplicatestore.000webhostapp.com/goods/create_goods.php";
+
+        public static final String URL_UPDATE =
+                "https://elecronicapplicatestore.000webhostapp.com/goods/update_goods.php";
+
+        public static final String URL_DELETE =
+                "https://elecronicapplicatestore.000webhostapp.com/goods/delete_goods.php";
+
     }
 
     public static class Orders {
@@ -85,6 +109,15 @@ public class Unit {
         public static final String URL_GET_ALL =
                 "https://elecronicapplicatestore.000webhostapp.com/orders/get_all_orders.php";
 
+        public static final String URL_CREATE =
+                "https://elecronicapplicatestore.000webhostapp.com/orders/create_order.php";
+
+        public static final String URL_UPDATE =
+                "https://elecronicapplicatestore.000webhostapp.com/orders/update_order.php";
+
+        public static final String URL_DELETE =
+                "https://elecronicapplicatestore.000webhostapp.com/orders/delete_order.php";
+
     }
 
     public static class PaymentMethods {
@@ -94,6 +127,15 @@ public class Unit {
 
         public static final String URL_GET_ALL =
                 "https://elecronicapplicatestore.000webhostapp.com/payment_methods/get_all_payment_methods.php";
+
+        public static final String URL_CREATE =
+                "https://elecronicapplicatestore.000webhostapp.com/payment_methods/create_payment_method.php";
+
+        public static final String URL_UPDATE =
+                "https://elecronicapplicatestore.000webhostapp.com/payment_methods/update_payment_method.php";
+
+        public static final String URL_DELETE =
+                "https://elecronicapplicatestore.000webhostapp.com/payment_methods/delete_payment_method.php";
 
     }
 
@@ -106,6 +148,15 @@ public class Unit {
 
         public static final String URL_GET_ALL =
                 "https://elecronicapplicatestore.000webhostapp.com/procurement/get_all_procurements.php";
+
+        public static final String URL_CREATE =
+                "https://elecronicapplicatestore.000webhostapp.com/procurement/create_procurement.php";
+
+        public static final String URL_UPDATE =
+                "https://elecronicapplicatestore.000webhostapp.com/procurement/update_procurement.php";
+
+        public static final String URL_DELETE =
+                "https://elecronicapplicatestore.000webhostapp.com/procurement/delete_procurement.php";
 
     }
 
@@ -120,6 +171,16 @@ public class Unit {
         public static final String URL_GET_ALL =
                 "https://elecronicapplicatestore.000webhostapp.com/reviews/get_all_reviews.php";
 
+        public static final String URL_CREATE =
+                "https://elecronicapplicatestore.000webhostapp.com/reviews/create_review.php";
+
+        public static final String URL_UPDATE =
+                "https://elecronicapplicatestore.000webhostapp.com/reviews/update_review.php";
+
+        public static final String URL_DELETE =
+                "https://elecronicapplicatestore.000webhostapp.com/reviews/delete_review.php";
+
+
     }
 
     public static class Sale {
@@ -131,6 +192,15 @@ public class Unit {
 
         public static final String URL_GET_ALL =
                 "https://elecronicapplicatestore.000webhostapp.com/sale/get_all_sale.php";
+
+        public static final String URL_CREATE =
+                "https://elecronicapplicatestore.000webhostapp.com/sale/create_sale.php";
+
+        public static final String URL_UPDATE =
+                "https://elecronicapplicatestore.000webhostapp.com/sale/update_sale.php";
+
+        public static final String URL_DELETE =
+                "https://elecronicapplicatestore.000webhostapp.com/sale/delete_sale.php";
 
     }
 
@@ -145,6 +215,15 @@ public class Unit {
         public static final String URL_GET_ALL =
                 "https://elecronicapplicatestore.000webhostapp.com/suppliers/get_all_suppliers.php";
 
+        public static final String URL_CREATE =
+                "https://elecronicapplicatestore.000webhostapp.com/suppliers/create_supplier.php";
+
+        public static final String URL_UPDATE =
+                "https://elecronicapplicatestore.000webhostapp.com/suppliers/update_supplier.php";
+
+        public static final String URL_DELETE =
+                "https://elecronicapplicatestore.000webhostapp.com/suppliers/delete_supplier.php";
+
     }
 
     public static class TypesOfGoods {
@@ -154,6 +233,15 @@ public class Unit {
 
         public static final String URL_GET_ALL =
                 "https://elecronicapplicatestore.000webhostapp.com/types_of_goods/get_all_types.php";
+
+        public static final String URL_CREATE =
+                "https://elecronicapplicatestore.000webhostapp.com/types_of_goods/create_type.php";
+
+        public static final String URL_UPDATE =
+                "https://elecronicapplicatestore.000webhostapp.com/types_of_goods/update_type.php";
+
+        public static final String URL_DELETE =
+                "https://elecronicapplicatestore.000webhostapp.com/types_of_goods/delete_type.php";
 
     }
 }
