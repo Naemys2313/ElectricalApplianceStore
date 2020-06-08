@@ -56,15 +56,6 @@ public class CustomJsonObjectRequest extends JsonObjectRequest {
         });
     }
 
-    public CustomJsonObjectRequest(String url, Response.Listener<JSONObject> listener) {
-        super(Method.GET, url, null, listener, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
-    }
-
     public static Map<String, String> toMap(JSONObject jsonObject) throws org.json.JSONException {
         Map<String, String> m = new HashMap<>();
 

@@ -5,11 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Spinner;
 
 
@@ -21,8 +23,10 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.material.textfield.TextInputEditText;
 import com.naemys.electricalappliancestore.database.CartDB;
 import com.naemys.electricalappliancestore.database.ClientDB;
+import com.naemys.electricalappliancestore.database.DeliveryDB;
 import com.naemys.electricalappliancestore.models.Cart;
 import com.naemys.electricalappliancestore.models.Client;
+import com.naemys.electricalappliancestore.models.Delivery;
 import com.naemys.electricalappliancestore.models.Goods;
 import com.naemys.electricalappliancestore.models.Order;
 import com.naemys.electricalappliancestore.request.CustomJsonObjectRequest;
@@ -70,8 +74,12 @@ public class AddDataActivity extends AppCompatActivity {
             table = data.getStringExtra(Unit.TABLE_EXTRA);
         }
 
+        goodsList = new ArrayList<>();
+        goodsStringList = new ArrayList<>();
 
-        addDataButton = findViewById(R.id.addDataButton);
+        orders = new ArrayList<>();
+        ordersStringList = new ArrayList<>();
+
 
         switch (table) {
             case Unit.Carts.TABLE_NAME:
@@ -86,6 +94,7 @@ public class AddDataActivity extends AppCompatActivity {
                 attachOrdersArrayAdapter();
 
                 final TextInputEditText quantityEditText = findViewById(R.id.quantityEditText);
+                addDataButton = findViewById(R.id.addDataButton);
 
                 if (data.getBooleanExtra(Unit.UPDATE_EXTRA, false)) {
                     invalidateOptionsMenu();
@@ -154,6 +163,7 @@ public class AddDataActivity extends AppCompatActivity {
                 final TextInputEditText lastNameEditText = findViewById(R.id.lastNameEditText);
                 final TextInputEditText middleNameEditText = findViewById(R.id.middleNameEditText);
                 final TextInputEditText discountEditText = findViewById(R.id.discountEditText);
+                addDataButton = findViewById(R.id.addDataButton);
 
                 addDataButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -176,6 +186,37 @@ public class AddDataActivity extends AppCompatActivity {
                 });
 
                 break;
+
+            case Unit.Delivery.TABLE_NAME:
+                setContentView(R.layout.activity_add_delivery);
+
+                final DeliveryDB deliveryDB = new DeliveryDB(this, requestQueue);
+
+                final TextInputEditText addressEditText = findViewById(R.id.addressEditText);
+                final CheckBox deliveredCheckBox = findViewById(R.id.deliveredCheckBox);
+                final TextInputEditText datetimeEditText = findViewById(R.id.dateTimeEditText);
+                orderSpinner = findViewById(R.id.orderSpinner);
+
+                attachOrdersArrayAdapter();
+                setOrders(null);
+
+                addDataButton = findViewById(R.id.addDataButton);
+                addDataButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String address = addressEditText.getText().toString().trim();
+                        String delivered = deliveredCheckBox.isChecked() ? "1" : "0";
+                        String datetime = datetimeEditText.getText().toString().trim();
+
+                        int orderIndex = orderSpinner.getSelectedItemPosition();
+                        String orderId = orders.get(orderIndex).getId();
+
+                        Delivery delivery =
+                                new Delivery(null, address, delivered, datetime, orderId);
+
+                        deliveryDB.create(delivery);
+                    }
+                });
         }
     }
 
@@ -199,30 +240,36 @@ public class AddDataActivity extends AppCompatActivity {
     }
 
     private void setGoods(final String goodsId) {
-        goodsList = new ArrayList<>();
-        goodsStringList = new ArrayList<>();
-
-        CustomJsonObjectRequest objectRequest = new CustomJsonObjectRequest(
+        JsonObjectRequest objectRequest = new JsonObjectRequest(JsonObjectRequest.Method.GET,
                 Unit.Goods.URL_GET_ALL,
+                null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-
                         try {
-                            JSONArray jsonArray = response.getJSONArray(Unit.Goods.TABLE_NAME);
+                            JSONArray array = response.getJSONArray(Unit.Goods.TABLE_NAME);
 
-                            for(int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            for (int i = 0; i < array.length(); i++) {
+                                JSONObject jsonObject = array.getJSONObject(i);
 
-                                Map<String, String> m = CustomJsonObjectRequest.toMap(jsonObject);
-                                Goods goods = (new Goods()).fromMap(m);
+                                String id = jsonObject.getString(Unit._ID);
+                                String name = jsonObject.getString(Unit.Goods._NAME);
+                                String typeId = jsonObject.getString(Unit.Goods._TYPE_ID);
+                                String quantityInStock = jsonObject.getString(Unit.Goods._QUANTITY_IN_STOCK);
+                                String description = jsonObject.getString(Unit.Goods._DESCRIPTION);
+
+
+                                Goods goods = new Goods(id, name, typeId, quantityInStock, description);
 
                                 goodsList.add(goods);
-                                goodsStringList.add(goods.toString());
+
+                                goodsStringList.add(goods.getId() + " - " + goods.getName());
 
                                 goodsArrayAdapter.notifyDataSetChanged();
+                            }
 
-                                if (data.getBooleanExtra(Unit.UPDATE_EXTRA, false)) {
+                            if (data.getBooleanExtra(Unit.UPDATE_EXTRA, false)) {
+                                for (int i = 0; i < goodsList.size(); i++) {
                                     if (goodsList.get(i).getId().equals(goodsId)) {
                                         goodsSpinner.setSelection(i);
                                     }
@@ -232,18 +279,21 @@ public class AddDataActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
-                }
-        );
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                });
 
         requestQueue.add(objectRequest);
     }
 
     private void setOrders(final String orderId) {
-        orders = new ArrayList<>();
-        ordersStringList = new ArrayList<>();
-
-        CustomJsonObjectRequest objectRequest = new CustomJsonObjectRequest(
+        JsonObjectRequest objectRequest = new JsonObjectRequest(JsonObjectRequest.Method.GET,
                 Unit.Orders.URL_GET_ALL,
+                null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -253,16 +303,24 @@ public class AddDataActivity extends AppCompatActivity {
                             for (int i = 0; i < array.length(); i++) {
                                 JSONObject jsonObject = array.getJSONObject(i);
 
-                                Map<String, String> m = CustomJsonObjectRequest.toMap(jsonObject);
-                                Order order = (new Order()).fromMap(m);
+                                String id = jsonObject.getString(Unit._ID);
+                                String clientId = jsonObject.getString(Unit.Orders._CLIENT_ID);
+                                String paymentMethodId = jsonObject.getString(Unit.Orders._PAYMENT_METHOD_ID);
+                                String paid = jsonObject.getString(Unit.Orders._PAID);
+                                String dateTime = jsonObject.getString(Unit.Orders._DATE_TIME);
+
+
+                                Order order = new Order(id, clientId, paymentMethodId, paid, dateTime);
 
                                 orders.add(order);
 
                                 ordersStringList.add(order.getId());
 
                                 ordersArrayAdapter.notifyDataSetChanged();
+                            }
 
-                                if (data.getBooleanExtra(Unit.UPDATE_EXTRA, false)) {
+                            if (data.getBooleanExtra(Unit.UPDATE_EXTRA, false)) {
+                                for (int i = 0; i < orders.size(); i++) {
                                     if (orders.get(i).getId().equals(orderId)) {
                                         orderSpinner.setSelection(i);
                                     }
@@ -271,6 +329,12 @@ public class AddDataActivity extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
                     }
                 });
 

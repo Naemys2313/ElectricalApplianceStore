@@ -12,16 +12,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".SignActivity">
+
+        </activity>
+        <activity android:name=".AddDataActivity" />
+        <activity android:name=".AllDataTable" />
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".AddDataActivity" />
-        <activity android:name=".AllDataTable" />
-        <activity android:name=".MainActivity">
-
         </activity>
     </application>
 
