@@ -10,6 +10,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.Spinner;
 
 
@@ -21,8 +23,10 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.material.textfield.TextInputEditText;
 import com.naemys.electricalappliancestore.database.CartDB;
 import com.naemys.electricalappliancestore.database.ClientDB;
+import com.naemys.electricalappliancestore.database.DeliveryDB;
 import com.naemys.electricalappliancestore.models.Cart;
 import com.naemys.electricalappliancestore.models.Client;
+import com.naemys.electricalappliancestore.models.Delivery;
 import com.naemys.electricalappliancestore.models.Goods;
 import com.naemys.electricalappliancestore.models.Order;
 import com.naemys.electricalappliancestore.request.CustomJsonObjectRequest;
@@ -75,106 +79,15 @@ public class AddDataActivity extends AppCompatActivity {
 
         switch (table) {
             case Unit.Carts.TABLE_NAME:
-                setContentView(R.layout.activity_add_cart);
-
-                final CartDB cartDB = new CartDB(this, requestQueue);
-
-                goodsSpinner = findViewById(R.id.goodsSpinner);
-                orderSpinner = findViewById(R.id.orderSpinner);
-
-                attachGoodsArrayAdapters();
-                attachOrdersArrayAdapter();
-
-                final TextInputEditText quantityEditText = findViewById(R.id.quantityEditText);
-
-                if (data.getBooleanExtra(Unit.UPDATE_EXTRA, false)) {
-                    invalidateOptionsMenu();
-
-                    String goodsId = data.getStringExtra(Unit.Carts._GOODS_ID);
-                    String quantity = data.getStringExtra(Unit.Carts._QUANTITY);
-                    String orderId = data.getStringExtra(Unit.Carts._ORDER_ID);
-
-                    quantityEditText.setText(quantity);
-
-                    addDataButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            int goodsIndex = goodsSpinner.getSelectedItemPosition();
-                            String goodsId = goodsList.get(goodsIndex).getId();
-
-                            int orderIndex = orderSpinner.getSelectedItemPosition();
-                            String orderId = orders.get(orderIndex).getId();
-
-                            String quantity = quantityEditText.getText().toString().trim();
-
-                            Cart cart = new Cart(data.getStringExtra(Unit._ID), goodsId, quantity, orderId);
-
-//                            updateCart(cart);
-                            cartDB.update(cart);
-                        }
-                    });
-
-                    setGoods(goodsId);
-                    setOrders(orderId);
-
-
-                } else {
-                    setGoods(null);
-                    setOrders(null);
-
-                    addDataButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            int goodsIndex = goodsSpinner.getSelectedItemPosition();
-                            String goodsId = goodsList.get(goodsIndex).getId();
-
-                            int orderIndex = orderSpinner.getSelectedItemPosition();
-                            String orderId = orders.get(orderIndex).getId();
-
-                            String quantity = quantityEditText.getText().toString().trim();
-
-                            Cart cart = new Cart();
-                            cart.setGoodsId(goodsId);
-                            cart.setOrderId(orderId);
-                            cart.setQuantity(quantity);
-
-                            cartDB.create(cart);
-                        }
-                    });
-                }
-
+                setAddCart();
                 break;
 
             case Unit.Clients.TABLE_NAME:
-                setContentView(R.layout.activity_add_client);
+                setAddClients();
+                break;
 
-                final ClientDB clientDB = new ClientDB(this, requestQueue);
-
-                final TextInputEditText firstNameEditText = findViewById(R.id.firstNameEditText);
-                final TextInputEditText lastNameEditText = findViewById(R.id.lastNameEditText);
-                final TextInputEditText middleNameEditText = findViewById(R.id.middleNameEditText);
-                final TextInputEditText discountEditText = findViewById(R.id.discountEditText);
-
-                addDataButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String id = data.getStringExtra(Unit._ID);
-                        String firstName = firstNameEditText.getText().toString().trim();
-                        String lastName = lastNameEditText.getText().toString().trim();
-                        String middleName = middleNameEditText.getText().toString().trim();
-                        String discount = discountEditText.getText().toString().trim();
-
-                        Client client = new Client();
-                        client.setId(id);
-                        client.setFirstName(firstName);
-                        client.setLastName(lastName);
-                        client.setMiddleName(middleName);
-                        client.setDiscount(discount);
-
-                        clientDB.create(client);
-                    }
-                });
-
+            case Unit.Delivery.TABLE_NAME:
+                setAddDelivery();
                 break;
         }
     }
@@ -196,6 +109,136 @@ public class AddDataActivity extends AppCompatActivity {
             cartDB.delete(data.getStringExtra(Unit._ID));
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private void setAddCart() {
+        setContentView(R.layout.activity_add_cart);
+
+        final CartDB cartDB = new CartDB(this, requestQueue);
+
+        goodsSpinner = findViewById(R.id.goodsSpinner);
+        orderSpinner = findViewById(R.id.orderSpinner);
+
+        attachGoodsArrayAdapters();
+        attachOrdersArrayAdapter();
+
+        final TextInputEditText quantityEditText = findViewById(R.id.quantityEditText);
+
+        if (data.getBooleanExtra(Unit.UPDATE_EXTRA, false)) {
+            invalidateOptionsMenu();
+
+            String goodsId = data.getStringExtra(Unit.Carts._GOODS_ID);
+            String quantity = data.getStringExtra(Unit.Carts._QUANTITY);
+            String orderId = data.getStringExtra(Unit.Carts._ORDER_ID);
+
+            quantityEditText.setText(quantity);
+
+            addDataButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int goodsIndex = goodsSpinner.getSelectedItemPosition();
+                    String goodsId = goodsList.get(goodsIndex).getId();
+
+                    int orderIndex = orderSpinner.getSelectedItemPosition();
+                    String orderId = orders.get(orderIndex).getId();
+
+                    String quantity = quantityEditText.getText().toString().trim();
+
+                    Cart cart = new Cart(data.getStringExtra(Unit._ID), goodsId, quantity, orderId);
+
+//                            updateCart(cart);
+                    cartDB.update(cart);
+                }
+            });
+
+            setGoods(goodsId);
+            setOrders(orderId);
+
+
+        } else {
+            setGoods(null);
+            setOrders(null);
+
+            addDataButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int goodsIndex = goodsSpinner.getSelectedItemPosition();
+                    String goodsId = goodsList.get(goodsIndex).getId();
+
+                    int orderIndex = orderSpinner.getSelectedItemPosition();
+                    String orderId = orders.get(orderIndex).getId();
+
+                    String quantity = quantityEditText.getText().toString().trim();
+
+                    Cart cart = new Cart();
+                    cart.setGoodsId(goodsId);
+                    cart.setOrderId(orderId);
+                    cart.setQuantity(quantity);
+
+                    cartDB.create(cart);
+                }
+            });
+        }
+    }
+
+    private void setAddClients() {
+        setContentView(R.layout.activity_add_client);
+
+        final ClientDB clientDB = new ClientDB(this, requestQueue);
+
+        final TextInputEditText firstNameEditText = findViewById(R.id.firstNameEditText);
+        final TextInputEditText lastNameEditText = findViewById(R.id.lastNameEditText);
+        final TextInputEditText middleNameEditText = findViewById(R.id.middleNameEditText);
+        final TextInputEditText discountEditText = findViewById(R.id.discountEditText);
+
+        addDataButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String id = data.getStringExtra(Unit._ID);
+                String firstName = firstNameEditText.getText().toString().trim();
+                String lastName = lastNameEditText.getText().toString().trim();
+                String middleName = middleNameEditText.getText().toString().trim();
+                String discount = discountEditText.getText().toString().trim();
+
+                Client client = new Client();
+                client.setId(id);
+                client.setFirstName(firstName);
+                client.setLastName(lastName);
+                client.setMiddleName(middleName);
+                client.setDiscount(discount);
+
+                clientDB.create(client);
+            }
+        });
+    }
+
+    private void setAddDelivery() {
+        final DeliveryDB deliveryDB = new DeliveryDB(this, requestQueue);
+
+        final TextInputEditText addressEditText = findViewById(R.id.addressEditText);
+        final CheckBox deliveredCheckBox = findViewById(R.id.deliveredCheckBox);
+        final TextInputEditText datetimeEditText = findViewById(R.id.dateTimeEditText);
+        orderSpinner = findViewById(R.id.orderSpinner);
+
+        attachOrdersArrayAdapter();
+        setOrders(null);
+
+        addDataButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String address = addressEditText.getText().toString().trim();
+                String delivered = deliveredCheckBox.isChecked() ? "1" : "0";
+                String datetime = datetimeEditText.getText().toString().trim();
+
+                int orderIndex = orderSpinner.getSelectedItemPosition();
+                String orderId = orders.get(orderIndex).getId();
+
+                Delivery delivery = new Delivery(null, address, delivered, datetime, orderId);
+
+                deliveryDB.create(delivery);
+            }
+        });
     }
 
     private void setGoods(final String goodsId) {
