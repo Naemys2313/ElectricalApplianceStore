@@ -26,12 +26,14 @@ import com.naemys.electricalappliancestore.database.CartDB;
 import com.naemys.electricalappliancestore.database.ClientDB;
 import com.naemys.electricalappliancestore.database.DeliveryDB;
 import com.naemys.electricalappliancestore.database.GoodsDB;
+import com.naemys.electricalappliancestore.database.OrderDB;
 import com.naemys.electricalappliancestore.models.Cart;
 import com.naemys.electricalappliancestore.models.Client;
 import com.naemys.electricalappliancestore.models.Delivery;
 import com.naemys.electricalappliancestore.models.Goods;
 import com.naemys.electricalappliancestore.models.Model;
 import com.naemys.electricalappliancestore.models.Order;
+import com.naemys.electricalappliancestore.models.PaymentMethod;
 import com.naemys.electricalappliancestore.models.TypeOfGoods;
 import com.naemys.electricalappliancestore.request.CustomJsonObjectRequest;
 import com.naemys.electricalappliancestore.request.CustomJsonStringRequest;
@@ -56,8 +58,8 @@ public class AddDataActivity extends AppCompatActivity {
     private List<Goods> goodsList;
     private List<Order> orders;
     private List<TypeOfGoods> typesOfGoods;
-
-    private ArrayAdapter<String> goodsArrayAdapter, ordersArrayAdapter, typesOfGoodsArrayAdapter;
+    private List<Client> clients;
+    private List<PaymentMethod> paymentMethods;
 
     private Spinner goodsSpinner, orderSpinner, typesOfGoodsSpinner;
 
@@ -80,6 +82,8 @@ public class AddDataActivity extends AppCompatActivity {
         goodsList = new ArrayList<>();
         orders = new ArrayList<>();
         typesOfGoods = new ArrayList<>();
+        clients = new ArrayList<>();
+        paymentMethods = new ArrayList<>();
 
         switch (table) {
             case Unit.Carts.TABLE_NAME:
@@ -247,6 +251,38 @@ public class AddDataActivity extends AppCompatActivity {
                 });
 
                 break;
+
+            case Unit.Orders.TABLE_NAME:
+                setContentView(R.layout.activity_add_order);
+
+                final OrderDB orderDB = new OrderDB(this, requestQueue);
+
+                final Spinner clientsSpinner = findViewById(R.id.clientsSpinner);
+                final Spinner paymentMethodsSpinner = findViewById(R.id.paymentMethodsSpinner);
+                final CheckBox paidCheckBox = findViewById(R.id.paidCheckBox);
+                final TextInputEditText dateTimeEditText = findViewById(R.id.dateTimeEditText);
+
+                setList(new Client(), clients, clientsSpinner, Unit.Clients.URL_GET_ALL, null);
+                setList(new PaymentMethod(), paymentMethods, paymentMethodsSpinner, Unit.PaymentMethods.URL_GET_ALL, null);
+
+                addDataButton = findViewById(R.id.addDataButton);
+                addDataButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int clientIndex = clientsSpinner.getSelectedItemPosition();
+                        String clientId = clients.get(clientIndex).getId();
+
+                        int paymentMethodIndex = paymentMethodsSpinner.getSelectedItemPosition();
+                        String paymentMethodId = paymentMethods.get(paymentMethodIndex).getId();
+
+                        String paid = paidCheckBox.isSelected() ? "1" : "0";
+                        String datetime = dateTimeEditText.getText().toString().trim();
+
+                        Order order = new Order(null, clientId, paymentMethodId, paid, datetime);
+                        orderDB.create(order);
+                    }
+                });
+
         }
     }
 
@@ -306,8 +342,8 @@ public class AddDataActivity extends AppCompatActivity {
 
                                 arrayAdapter.notifyDataSetChanged();
 
-                                if(data.getBooleanExtra(Unit.UPDATE_EXTRA, false)) {
-                                    if(id.equals(m.get(Unit._ID))) {
+                                if (data.getBooleanExtra(Unit.UPDATE_EXTRA, false)) {
+                                    if (id.equals(m.get(Unit._ID))) {
                                         spinner.setSelection(i);
                                     }
                                 }

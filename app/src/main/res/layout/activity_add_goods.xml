@@ -32,7 +32,7 @@
 
     <Spinner
         android:id="@+id/typesOfGoodsSpinner"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/typeId"
         app:layout_constraintTop_toTopOf="@+id/typeId" />
