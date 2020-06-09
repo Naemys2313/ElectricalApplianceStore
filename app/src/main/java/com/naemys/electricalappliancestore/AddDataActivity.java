@@ -29,6 +29,7 @@ import com.naemys.electricalappliancestore.database.GoodsDB;
 import com.naemys.electricalappliancestore.database.OrderDB;
 import com.naemys.electricalappliancestore.database.PaymentMethodDB;
 import com.naemys.electricalappliancestore.database.ProcurementDB;
+import com.naemys.electricalappliancestore.database.ReviewDB;
 import com.naemys.electricalappliancestore.models.Cart;
 import com.naemys.electricalappliancestore.models.Client;
 import com.naemys.electricalappliancestore.models.Delivery;
@@ -37,6 +38,7 @@ import com.naemys.electricalappliancestore.models.Model;
 import com.naemys.electricalappliancestore.models.Order;
 import com.naemys.electricalappliancestore.models.PaymentMethod;
 import com.naemys.electricalappliancestore.models.Procurement;
+import com.naemys.electricalappliancestore.models.Review;
 import com.naemys.electricalappliancestore.models.Supplier;
 import com.naemys.electricalappliancestore.models.TypeOfGoods;
 import com.naemys.electricalappliancestore.request.CustomJsonObjectRequest;
@@ -465,6 +467,36 @@ public class AddDataActivity extends AppCompatActivity {
     }
 
     private void setActivityReview() {
+        setContentView(R.layout.activity_add_review);
+
+        final ReviewDB reviewDB = new ReviewDB(this, requestQueue);
+
+        final Spinner goodsSpinner = findViewById(R.id.goodsSpinner);
+        final Spinner clientsSpinner = findViewById(R.id.clientsSpinner);
+        final TextInputEditText reviewTextEditText = findViewById(R.id.reviewTextEditText);
+        final TextInputEditText ratingEditText = findViewById(R.id.ratingEditText);
+
+        setList(new Goods(), goodsList, goodsSpinner, Unit.Goods.URL_GET_ALL, null);
+        setList(new Client(), clients, clientsSpinner, Unit.Clients.URL_GET_ALL, null);
+
+        addDataButton = findViewById(R.id.addDataButton);
+        addDataButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int goodsIndex = goodsSpinner.getSelectedItemPosition();
+                String goodsId = goodsList.get(goodsIndex).getId();
+
+                int clientIndex = clientsSpinner.getSelectedItemPosition();
+                String clientId = clients.get(clientIndex).getId();
+
+                String reviewText = reviewTextEditText.getText().toString().trim();
+                String rating = ratingEditText.getText().toString().trim();
+
+                Review review = new Review(null, goodsId, clientId, reviewText, rating);
+
+                reviewDB.create(review);
+            }
+        });
 
     }
 

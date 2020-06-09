@@ -59,4 +59,6 @@
     <string name="hint_quantity_in_stock_edit_text">Enter quantity in stock</string>
     <string name="hint_description_edit_text">Enter description</string>
     <string name="hint_price_edit_text">Enter price</string>
+    <string name="hint_review_text_edit_text">Enter review</string>
+    <string name="hint_rating_edit_text">Enter rating</string>
 </resources>
