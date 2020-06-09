@@ -33,10 +33,14 @@ import com.naemys.electricalappliancestore.database.SaleDB;
 import com.naemys.electricalappliancestore.database.SupplierDB;
 import com.naemys.electricalappliancestore.database.TypeOfGoodsDB;
 import com.naemys.electricalappliancestore.models.Cart;
+import com.naemys.electricalappliancestore.models.Client;
+import com.naemys.electricalappliancestore.models.Model;
 import com.naemys.electricalappliancestore.units.Unit;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AllDataTable extends AppCompatActivity {
 
@@ -87,6 +91,15 @@ public class AllDataTable extends AppCompatActivity {
 
                 case Unit.Clients.TABLE_NAME:
                     ClientAdapter clientAdapter = new ClientAdapter(this, list);
+                    clientAdapter.setOnClickListener(new CartAdapter.OnClickListener() {
+                        @Override
+                        public void onClick(int position) {
+                            Client client = (Client) list.get(position);
+
+                            updateData(client);
+                        }
+                    });
+
                     attachAdapter(clientAdapter);
 
                     ClientDB clientDB =
@@ -193,7 +206,7 @@ public class AllDataTable extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void updateData(Cart cart) {
+    /*public void updateData(Cart cart) {
         Intent intent = new Intent(AllDataTable.this, AddDataActivity.class);
         intent.putExtra(Unit.TABLE_EXTRA, table);
         intent.putExtra(Unit.UPDATE_EXTRA, true);
@@ -201,6 +214,17 @@ public class AllDataTable extends AppCompatActivity {
         intent.putExtra(Unit.Carts._ORDER_ID, cart.getOrderId());
         intent.putExtra(Unit.Carts._QUANTITY, cart.getQuantity());
         intent.putExtra(Unit.Carts._GOODS_ID, cart.getGoodsId());
+
+        startActivity(intent);
+    }*/
+
+    private void updateData(Model model) {
+        Intent intent = new Intent(AllDataTable.this, AddDataActivity.class);
+        intent.putExtra(Unit.TABLE_EXTRA, table);
+        intent.putExtra(Unit.UPDATE_EXTRA, true);
+
+        HashMap<String, String> m = (HashMap)model.toMap(true);
+        intent.putExtra("data", m);
 
         startActivity(intent);
     }

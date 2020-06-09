@@ -18,21 +18,31 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
 
     private Context context;
     private List<Client> clients;
+    private View view;
+
+    private CartAdapter.OnClickListener onClickListener;
 
     public ClientAdapter(Context context, List<Client> clients) {
         this.context = context;
         this.clients = clients;
     }
 
+    public void setOnClickListener(CartAdapter.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
+    }
+
     @NonNull
     @Override
     public ClientViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_client, parent, false);
+
+        this.view = view;
+
         return new ClientViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ClientViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ClientViewHolder holder, final int position) {
         Client client = clients.get(position);
 
         holder.idTextView.setText(client.getId());
@@ -40,6 +50,13 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
         holder.lastNameTextView.setText(client.getLastName());
         holder.middleNameTextView.setText(client.getMiddleName());
         holder.discountTextView.setText(client.getDiscount());
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickListener.onClick(position);
+            }
+        });
     }
 
     @Override

@@ -235,31 +235,33 @@ public class AddDataActivity extends AppCompatActivity {
         final TextInputEditText quantityEditText = findViewById(R.id.quantityEditText);
         addDataButton = findViewById(R.id.addDataButton);
 
+        final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
+
         if (data.getBooleanExtra(Unit.UPDATE_EXTRA, false)) {
             invalidateOptionsMenu();
 
-            String goodsId = data.getStringExtra(Unit.Carts._GOODS_ID);
-            String quantity = data.getStringExtra(Unit.Carts._QUANTITY);
-            String orderId = data.getStringExtra(Unit.Carts._ORDER_ID);
+            String goodsId = m.get(Unit.Carts._GOODS_ID);
+            String quantity = m.get(Unit.Carts._QUANTITY);
+            String orderId = m.get(Unit.Carts._ORDER_ID);
 
             quantityEditText.setText(quantity);
 
-            addDataButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int goodsIndex = goodsSpinner.getSelectedItemPosition();
-                    String goodsId = goodsList.get(goodsIndex).getId();
-
-                    int orderIndex = orderSpinner.getSelectedItemPosition();
-                    String orderId = orders.get(orderIndex).getId();
-
-                    String quantity = quantityEditText.getText().toString().trim();
-
-                    Cart cart = new Cart(data.getStringExtra(Unit._ID), goodsId, quantity, orderId);
-
-                    cartDB.update(cart);
-                }
-            });
+//            addDataButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    int goodsIndex = goodsSpinner.getSelectedItemPosition();
+//                    String goodsId = goodsList.get(goodsIndex).getId();
+//
+//                    int orderIndex = orderSpinner.getSelectedItemPosition();
+//                    String orderId = orders.get(orderIndex).getId();
+//
+//                    String quantity = quantityEditText.getText().toString().trim();
+//
+//                    Cart cart = new Cart(m.get(Unit._ID), goodsId, quantity, orderId);
+//
+//                    cartDB.update(cart);
+//                }
+//            });
 
             setList(new Goods(), goodsList, goodsSpinner, Unit.Goods.URL_GET_ALL, goodsId);
             setList(new Order(), orders, orderSpinner, Unit.Orders.URL_GET_ALL, orderId);
@@ -267,7 +269,7 @@ public class AddDataActivity extends AppCompatActivity {
             setList(new Goods(), goodsList, goodsSpinner, Unit.Goods.URL_GET_ALL, null);
             setList(new Order(), orders, orderSpinner, Unit.Orders.URL_GET_ALL, null);
 
-            addDataButton.setOnClickListener(new View.OnClickListener() {
+            /*addDataButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int goodsIndex = goodsSpinner.getSelectedItemPosition();
@@ -285,8 +287,34 @@ public class AddDataActivity extends AppCompatActivity {
 
                     cartDB.create(cart);
                 }
-            });
+            });*/
         }
+
+        addDataButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int goodsIndex = goodsSpinner.getSelectedItemPosition();
+                String goodsId = goodsList.get(goodsIndex).getId();
+
+                int orderIndex = orderSpinner.getSelectedItemPosition();
+                String orderId = orders.get(orderIndex).getId();
+
+                String quantity = quantityEditText.getText().toString().trim();
+
+                Cart cart = new Cart();
+                if (data.getBooleanExtra(Unit.UPDATE_EXTRA, false))
+                    cart.setId(m.get(Unit._ID));
+                cart.setGoodsId(goodsId);
+                cart.setOrderId(orderId);
+                cart.setQuantity(quantity);
+
+                if (data.getBooleanExtra(Unit.UPDATE_EXTRA, false)) {
+                    cartDB.update(cart);
+                } else {
+                    cartDB.create(cart);
+                }
+            }
+        });
     }
 
     private void setActivityClients() {
@@ -300,23 +328,44 @@ public class AddDataActivity extends AppCompatActivity {
         final TextInputEditText discountEditText = findViewById(R.id.discountEditText);
         addDataButton = findViewById(R.id.addDataButton);
 
+        final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
+
+        if (data.getBooleanExtra(Unit.UPDATE_EXTRA, false)) {
+
+            String firstName = m.get(Unit.Clients._FIRST_NAME);
+            String lastName = m.get(Unit.Clients._LAST_NAME);
+            String middleName = m.get(Unit.Clients._MIDDLE_NAME);
+            String discount = m.get(Unit.Clients._DISCOUNT);
+
+            firstNameEditText.setText(firstName);
+            lastNameEditText.setText(lastName);
+            middleNameEditText.setText(middleName);
+            discountEditText.setText(discount);
+        }
+
         addDataButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String id = data.getStringExtra(Unit._ID);
+
+
                 String firstName = firstNameEditText.getText().toString().trim();
                 String lastName = lastNameEditText.getText().toString().trim();
                 String middleName = middleNameEditText.getText().toString().trim();
                 String discount = discountEditText.getText().toString().trim();
 
                 Client client = new Client();
-                client.setId(id);
+                if (data.getBooleanExtra(Unit.UPDATE_EXTRA, false)) {
+                    client.setId(m.get(Unit._ID));
+                }
                 client.setFirstName(firstName);
                 client.setLastName(lastName);
                 client.setMiddleName(middleName);
                 client.setDiscount(discount);
-
-                clientDB.create(client);
+                if (data.getBooleanExtra(Unit.UPDATE_EXTRA, false)) {
+                    clientDB.update(client);
+                } else {
+                    clientDB.create(client);
+                }
             }
         });
     }
@@ -577,5 +626,9 @@ public class AddDataActivity extends AppCompatActivity {
                 typeOfGoodsDB.create(typeOfGoods);
             }
         });
+    }
+
+    private void getCart() {
+
     }
 }
