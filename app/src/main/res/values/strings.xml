@@ -61,4 +61,5 @@
     <string name="hint_price_edit_text">Enter price</string>
     <string name="hint_review_text_edit_text">Enter review</string>
     <string name="hint_rating_edit_text">Enter rating</string>
+    <string name="hint_phone_edit_text">Enter phone</string>
 </resources>

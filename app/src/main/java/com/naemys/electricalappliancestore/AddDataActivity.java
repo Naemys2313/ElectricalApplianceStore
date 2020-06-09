@@ -31,6 +31,7 @@ import com.naemys.electricalappliancestore.database.PaymentMethodDB;
 import com.naemys.electricalappliancestore.database.ProcurementDB;
 import com.naemys.electricalappliancestore.database.ReviewDB;
 import com.naemys.electricalappliancestore.database.SaleDB;
+import com.naemys.electricalappliancestore.database.SupplierDB;
 import com.naemys.electricalappliancestore.models.Cart;
 import com.naemys.electricalappliancestore.models.Client;
 import com.naemys.electricalappliancestore.models.Delivery;
@@ -531,6 +532,29 @@ public class AddDataActivity extends AppCompatActivity {
     }
 
     private void setActivitySupplier() {
+        setContentView(R.layout.acivity_add_supplier);
+
+        final SupplierDB supplierDB = new SupplierDB(this, requestQueue);
+
+        final TextInputEditText firstNameEditText = findViewById(R.id.firstNameEditText);
+        final TextInputEditText lastNameEditText = findViewById(R.id.lastNameEditText);
+        final TextInputEditText middleNameEditText = findViewById(R.id.middleNameEditText);
+        final TextInputEditText phoneEditText = findViewById(R.id.phoneEditText);
+
+        addDataButton = findViewById(R.id.addDataButton);
+        addDataButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String firstName = firstNameEditText.getText().toString().trim();
+                String lastName = lastNameEditText.getText().toString().trim();
+                String middleName = middleNameEditText.getText().toString().trim();
+                String phone = phoneEditText.getText().toString().trim();
+
+                Supplier supplier = new Supplier(null, firstName, lastName, middleName, phone);
+
+                supplierDB.create(supplier);
+            }
+        });
 
     }
 
