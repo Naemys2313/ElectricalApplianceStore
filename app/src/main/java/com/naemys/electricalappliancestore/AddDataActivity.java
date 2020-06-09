@@ -15,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.Spinner;
 
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -24,11 +25,14 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.naemys.electricalappliancestore.database.CartDB;
 import com.naemys.electricalappliancestore.database.ClientDB;
 import com.naemys.electricalappliancestore.database.DeliveryDB;
+import com.naemys.electricalappliancestore.database.GoodsDB;
 import com.naemys.electricalappliancestore.models.Cart;
 import com.naemys.electricalappliancestore.models.Client;
 import com.naemys.electricalappliancestore.models.Delivery;
 import com.naemys.electricalappliancestore.models.Goods;
+import com.naemys.electricalappliancestore.models.Model;
 import com.naemys.electricalappliancestore.models.Order;
+import com.naemys.electricalappliancestore.models.TypeOfGoods;
 import com.naemys.electricalappliancestore.request.CustomJsonObjectRequest;
 import com.naemys.electricalappliancestore.request.CustomJsonStringRequest;
 import com.naemys.electricalappliancestore.units.Unit;
@@ -37,6 +41,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,13 +55,11 @@ public class AddDataActivity extends AppCompatActivity {
 
     private List<Goods> goodsList;
     private List<Order> orders;
+    private List<TypeOfGoods> typesOfGoods;
 
-    private List<String> goodsStringList;
-    private List<String> ordersStringList;
+    private ArrayAdapter<String> goodsArrayAdapter, ordersArrayAdapter, typesOfGoodsArrayAdapter;
 
-    private ArrayAdapter<String> goodsArrayAdapter, ordersArrayAdapter;
-
-    private Spinner goodsSpinner, orderSpinner;
+    private Spinner goodsSpinner, orderSpinner, typesOfGoodsSpinner;
 
     private Intent data;
 
@@ -75,11 +78,8 @@ public class AddDataActivity extends AppCompatActivity {
         }
 
         goodsList = new ArrayList<>();
-        goodsStringList = new ArrayList<>();
-
         orders = new ArrayList<>();
-        ordersStringList = new ArrayList<>();
-
+        typesOfGoods = new ArrayList<>();
 
         switch (table) {
             case Unit.Carts.TABLE_NAME:
@@ -89,9 +89,6 @@ public class AddDataActivity extends AppCompatActivity {
 
                 goodsSpinner = findViewById(R.id.goodsSpinner);
                 orderSpinner = findViewById(R.id.orderSpinner);
-
-                attachGoodsArrayAdapters();
-                attachOrdersArrayAdapter();
 
                 final TextInputEditText quantityEditText = findViewById(R.id.quantityEditText);
                 addDataButton = findViewById(R.id.addDataButton);
@@ -118,18 +115,15 @@ public class AddDataActivity extends AppCompatActivity {
 
                             Cart cart = new Cart(data.getStringExtra(Unit._ID), goodsId, quantity, orderId);
 
-//                            updateCart(cart);
                             cartDB.update(cart);
                         }
                     });
 
-                    setGoods(goodsId);
-                    setOrders(orderId);
-
-
+                    setList(new Goods(), goodsList, goodsSpinner, Unit.Goods.URL_GET_ALL, goodsId);
+                    setList(new Order(), orders, orderSpinner, Unit.Orders.URL_GET_ALL, orderId);
                 } else {
-                    setGoods(null);
-                    setOrders(null);
+                    setList(new Goods(), goodsList, goodsSpinner, Unit.Goods.URL_GET_ALL, null);
+                    setList(new Order(), orders, orderSpinner, Unit.Orders.URL_GET_ALL, null);
 
                     addDataButton.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -197,8 +191,7 @@ public class AddDataActivity extends AppCompatActivity {
                 final TextInputEditText datetimeEditText = findViewById(R.id.dateTimeEditText);
                 orderSpinner = findViewById(R.id.orderSpinner);
 
-                attachOrdersArrayAdapter();
-                setOrders(null);
+                setList(new Order(), orders, orderSpinner, Unit.Orders.URL_GET_ALL, null);
 
                 addDataButton = findViewById(R.id.addDataButton);
                 addDataButton.setOnClickListener(new View.OnClickListener() {
@@ -217,6 +210,43 @@ public class AddDataActivity extends AppCompatActivity {
                         deliveryDB.create(delivery);
                     }
                 });
+
+                break;
+
+            case Unit.Goods.TABLE_NAME:
+                setContentView(R.layout.activity_add_goods);
+
+                final GoodsDB goodsDB = new GoodsDB(this, requestQueue);
+
+                final TextInputEditText nameEditText = findViewById(R.id.nameEditText);
+                typesOfGoodsSpinner = findViewById(R.id.typesOfGoodsSpinner);
+                final TextInputEditText quantityInStockEditText
+                        = findViewById(R.id.quantityInStockEditText);
+                final TextInputEditText descriptionEditText = findViewById(R.id.descriptionEditText);
+
+                setList(new TypeOfGoods(), typesOfGoods, typesOfGoodsSpinner, Unit.TypesOfGoods.URL_GET_ALL, null);
+
+                addDataButton = findViewById(R.id.addDataButton);
+                addDataButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String name = nameEditText.getText().toString().trim();
+
+                        int typeIndex = typesOfGoodsSpinner.getSelectedItemPosition();
+                        String typeId = typesOfGoods.get(typeIndex).getId();
+
+                        String quantityInStock = quantityInStockEditText.getText().toString()
+                                .trim();
+                        String description = descriptionEditText.getText().toString().trim();
+
+                        Goods goods
+                                = new Goods(null, name, typeId, quantityInStock, description);
+
+                        goodsDB.create(goods);
+                    }
+                });
+
+                break;
         }
     }
 
@@ -239,39 +269,46 @@ public class AddDataActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setGoods(final String goodsId) {
-        JsonObjectRequest objectRequest = new JsonObjectRequest(JsonObjectRequest.Method.GET,
-                Unit.Goods.URL_GET_ALL,
+    private void setList(final Model model,
+                         final List models,
+                         final Spinner spinner,
+                         String url,
+                         final String id) {
+
+        final List<String> modelsStringList = new ArrayList<>();
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                modelsStringList
+        );
+
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
+
+        JsonObjectRequest objectRequest = new JsonObjectRequest(
+                JsonObjectRequest.Method.GET,
+                url,
                 null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            JSONArray array = response.getJSONArray(Unit.Goods.TABLE_NAME);
+                            JSONArray jsonArray = response.getJSONArray(model.getTableName());
 
-                            for (int i = 0; i < array.length(); i++) {
-                                JSONObject jsonObject = array.getJSONObject(i);
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-                                String id = jsonObject.getString(Unit._ID);
-                                String name = jsonObject.getString(Unit.Goods._NAME);
-                                String typeId = jsonObject.getString(Unit.Goods._TYPE_ID);
-                                String quantityInStock = jsonObject.getString(Unit.Goods._QUANTITY_IN_STOCK);
-                                String description = jsonObject.getString(Unit.Goods._DESCRIPTION);
+                                Map<String, String> m = CustomJsonObjectRequest.toMap(jsonObject);
+                                Model mod = (Model) model.fromMap(m);
 
+                                models.add(mod);
+                                modelsStringList.add(mod.toString());
 
-                                Goods goods = new Goods(id, name, typeId, quantityInStock, description);
+                                arrayAdapter.notifyDataSetChanged();
 
-                                goodsList.add(goods);
-
-                                goodsStringList.add(goods.getId() + " - " + goods.getName());
-
-                                goodsArrayAdapter.notifyDataSetChanged();
-                            }
-
-                            if (data.getBooleanExtra(Unit.UPDATE_EXTRA, false)) {
-                                for (int i = 0; i < goodsList.size(); i++) {
-                                    if (goodsList.get(i).getId().equals(goodsId)) {
-                                        goodsSpinner.setSelection(i);
+                                if(data.getBooleanExtra(Unit.UPDATE_EXTRA, false)) {
+                                    if(id.equals(m.get(Unit._ID))) {
+                                        spinner.setSelection(i);
                                     }
                                 }
                             }
@@ -285,88 +322,9 @@ public class AddDataActivity extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
                     }
-                });
-
-        requestQueue.add(objectRequest);
-    }
-
-    private void setOrders(final String orderId) {
-        JsonObjectRequest objectRequest = new JsonObjectRequest(JsonObjectRequest.Method.GET,
-                Unit.Orders.URL_GET_ALL,
-                null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray array = response.getJSONArray(Unit.Orders.TABLE_NAME);
-
-                            for (int i = 0; i < array.length(); i++) {
-                                JSONObject jsonObject = array.getJSONObject(i);
-
-                                String id = jsonObject.getString(Unit._ID);
-                                String clientId = jsonObject.getString(Unit.Orders._CLIENT_ID);
-                                String paymentMethodId = jsonObject.getString(Unit.Orders._PAYMENT_METHOD_ID);
-                                String paid = jsonObject.getString(Unit.Orders._PAID);
-                                String dateTime = jsonObject.getString(Unit.Orders._DATE_TIME);
-
-
-                                Order order = new Order(id, clientId, paymentMethodId, paid, dateTime);
-
-                                orders.add(order);
-
-                                ordersStringList.add(order.getId());
-
-                                ordersArrayAdapter.notifyDataSetChanged();
-                            }
-
-                            if (data.getBooleanExtra(Unit.UPDATE_EXTRA, false)) {
-                                for (int i = 0; i < orders.size(); i++) {
-                                    if (orders.get(i).getId().equals(orderId)) {
-                                        orderSpinner.setSelection(i);
-                                    }
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                });
-
-        requestQueue.add(objectRequest);
-    }
-
-    private void attachGoodsArrayAdapters() {
-        goodsArrayAdapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                goodsStringList
+                }
         );
 
-        goodsArrayAdapter
-                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        goodsSpinner.setAdapter(goodsArrayAdapter);
-
-    }
-
-    private void attachOrdersArrayAdapter() {
-        ordersArrayAdapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                ordersStringList
-        );
-
-        ordersArrayAdapter
-                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        orderSpinner.setAdapter(ordersArrayAdapter);
-
-
+        requestQueue.add(objectRequest);
     }
 }
