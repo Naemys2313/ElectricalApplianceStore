@@ -32,6 +32,7 @@ import com.naemys.electricalappliancestore.database.ProcurementDB;
 import com.naemys.electricalappliancestore.database.ReviewDB;
 import com.naemys.electricalappliancestore.database.SaleDB;
 import com.naemys.electricalappliancestore.database.SupplierDB;
+import com.naemys.electricalappliancestore.database.TypeOfGoodsDB;
 import com.naemys.electricalappliancestore.models.Cart;
 import com.naemys.electricalappliancestore.models.Client;
 import com.naemys.electricalappliancestore.models.Delivery;
@@ -559,6 +560,22 @@ public class AddDataActivity extends AppCompatActivity {
     }
 
     private void setActivityTypeOfGoods() {
+        setContentView(R.layout.activity_add_type_of_goods);
 
+        final TypeOfGoodsDB typeOfGoodsDB = new TypeOfGoodsDB(this, requestQueue);
+
+        final TextInputEditText nameEditText = findViewById(R.id.nameEditText);
+
+        addDataButton = findViewById(R.id.addDataButton);
+        addDataButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String name = nameEditText.getText().toString().trim();
+
+                TypeOfGoods typeOfGoods = new TypeOfGoods(null, name);
+
+                typeOfGoodsDB.create(typeOfGoods);
+            }
+        });
     }
 }
