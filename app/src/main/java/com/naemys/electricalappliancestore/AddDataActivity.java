@@ -30,6 +30,7 @@ import com.naemys.electricalappliancestore.database.OrderDB;
 import com.naemys.electricalappliancestore.database.PaymentMethodDB;
 import com.naemys.electricalappliancestore.database.ProcurementDB;
 import com.naemys.electricalappliancestore.database.ReviewDB;
+import com.naemys.electricalappliancestore.database.SaleDB;
 import com.naemys.electricalappliancestore.models.Cart;
 import com.naemys.electricalappliancestore.models.Client;
 import com.naemys.electricalappliancestore.models.Delivery;
@@ -39,6 +40,7 @@ import com.naemys.electricalappliancestore.models.Order;
 import com.naemys.electricalappliancestore.models.PaymentMethod;
 import com.naemys.electricalappliancestore.models.Procurement;
 import com.naemys.electricalappliancestore.models.Review;
+import com.naemys.electricalappliancestore.models.Sale;
 import com.naemys.electricalappliancestore.models.Supplier;
 import com.naemys.electricalappliancestore.models.TypeOfGoods;
 import com.naemys.electricalappliancestore.request.CustomJsonObjectRequest;
@@ -501,7 +503,31 @@ public class AddDataActivity extends AppCompatActivity {
     }
 
     private void setActivitySale() {
+        setContentView(R.layout.activity_add_sale);
 
+        final SaleDB saleDB = new SaleDB(this, requestQueue);
+
+        final Spinner goodsSpinner = findViewById(R.id.goodsSpinner);
+        final TextInputEditText priceEditText = findViewById(R.id.priceEditText);
+        final TextInputEditText discountEditText = findViewById(R.id.discountEditText);
+
+        setList(new Goods(), goodsList, goodsSpinner, Unit.Goods.URL_GET_ALL, null);
+
+        addDataButton = findViewById(R.id.addDataButton);
+        addDataButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int goodsIndex = goodsSpinner.getSelectedItemPosition();
+                String goodsId = goodsList.get(goodsIndex).getId();
+
+                String price = priceEditText.getText().toString().trim();
+                String discount = discountEditText.getText().toString().trim();
+
+                Sale sale = new Sale(null, goodsId, price, discount);
+
+                saleDB.create(sale);
+            }
+        });
     }
 
     private void setActivitySupplier() {
