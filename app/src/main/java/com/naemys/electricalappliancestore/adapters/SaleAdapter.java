@@ -19,26 +19,43 @@ public class SaleAdapter extends RecyclerView.Adapter<SaleAdapter.SaleViewHolder
     private Context context;
     private List<Sale> sales;
 
+    private View view;
+    private CartAdapter.OnClickListener onClickListener;
+
     public SaleAdapter(Context context, List<Sale> sales) {
         this.context = context;
         this.sales = sales;
+    }
+
+    public void setOnClickListener(CartAdapter.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
     }
 
     @NonNull
     @Override
     public SaleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_sale, parent, false);
+
+        this.view = view;
+
         return new SaleViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SaleViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SaleViewHolder holder, final int position) {
         Sale sale = sales.get(position);
 
         holder.idTextView.setText(sale.getId());
         holder.goodsIdTextView.setText(sale.getGoodsId());
         holder.priceTextView.setText(sale.getPrice());
         holder.discountTextView.setText(sale.getDiscount());
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickListener.onClick(position);
+            }
+        });
     }
 
     @Override

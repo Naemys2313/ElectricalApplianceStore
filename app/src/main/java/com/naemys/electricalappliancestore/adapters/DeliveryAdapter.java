@@ -19,20 +19,30 @@ public class DeliveryAdapter extends RecyclerView.Adapter<DeliveryAdapter.Delive
     private Context context;
     private List<Delivery> deliveries;
 
+    private View view;
+    private CartAdapter.OnClickListener onClickListener;
+
     public DeliveryAdapter(Context context, List<Delivery> deliveries) {
         this.context = context;
         this.deliveries = deliveries;
+    }
+
+    public void setOnClickListener(CartAdapter.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
     }
 
     @NonNull
     @Override
     public DeliveryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_delivery, parent, false);
+
+        this.view = view;
+
         return new DeliveryViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull DeliveryViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull DeliveryViewHolder holder, final int position) {
         Delivery delivery = deliveries.get(position);
 
         holder.idTextView.setText(delivery.getId());
@@ -40,6 +50,13 @@ public class DeliveryAdapter extends RecyclerView.Adapter<DeliveryAdapter.Delive
         holder.deliveredTextView.setText(delivery.getDelivered());
         holder.dateTimeTextView.setText(delivery.getDateTime());
         holder.orderIdTextView.setText(delivery.getOrderId());
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickListener.onClick(position);
+            }
+        });
     }
 
     @Override

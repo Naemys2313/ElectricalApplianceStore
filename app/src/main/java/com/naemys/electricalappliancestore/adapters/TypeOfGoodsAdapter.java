@@ -20,24 +20,41 @@ public class TypeOfGoodsAdapter extends RecyclerView.Adapter<TypeOfGoodsAdapter.
     private Context context;
     private List<TypeOfGoods> typesOfGoods;
 
+    private View view;
+    private CartAdapter.OnClickListener onClickListener;
+
     public TypeOfGoodsAdapter(Context context, List<TypeOfGoods> typesOfGoods) {
         this.context = context;
         this.typesOfGoods = typesOfGoods;
+    }
+
+    public void setOnClickListener(CartAdapter.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
     }
 
     @NonNull
     @Override
     public TypeOfGoodsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_type_of_goods, parent, false);
+
+        this.view = view;
+
         return new TypeOfGoodsViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TypeOfGoodsViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull TypeOfGoodsViewHolder holder, final int position) {
         TypeOfGoods typeOfGoods = typesOfGoods.get(position);
 
         holder.idTextView.setText(typeOfGoods.getId());
         holder.nameTextView.setText(typeOfGoods.getName());
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickListener.onClick(position);
+            }
+        });
     }
 
     @Override

@@ -19,20 +19,30 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
     private Context context;
     private List<Review> reviews;
 
+    private View view;
+    private CartAdapter.OnClickListener onClickListener;
+
     public ReviewAdapter(Context context, List<Review> reviews) {
         this.context = context;
         this.reviews = reviews;
+    }
+
+    public void setOnClickListener(CartAdapter.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
     }
 
     @NonNull
     @Override
     public ReviewViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_review, parent, false);
+
+        this.view = view;
+
         return new ReviewViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ReviewViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ReviewViewHolder holder, final int position) {
         Review review = reviews.get(position);
 
         holder.idTextView.setText(review.getId());
@@ -41,7 +51,12 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         holder.reviewTextTextView.setText(review.getReviewText());
         holder.ratingTextView.setText(review.getRating());
 
-
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickListener.onClick(position);
+            }
+        });
     }
 
     @Override

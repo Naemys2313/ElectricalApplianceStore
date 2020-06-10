@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,7 +14,6 @@ import android.widget.CheckBox;
 import android.widget.Spinner;
 
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -46,14 +44,12 @@ import com.naemys.electricalappliancestore.models.Sale;
 import com.naemys.electricalappliancestore.models.Supplier;
 import com.naemys.electricalappliancestore.models.TypeOfGoods;
 import com.naemys.electricalappliancestore.request.CustomJsonObjectRequest;
-import com.naemys.electricalappliancestore.request.CustomJsonStringRequest;
 import com.naemys.electricalappliancestore.units.Unit;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,6 +60,8 @@ public class AddDataActivity extends AppCompatActivity {
     private RequestQueue requestQueue;
 
     private String table;
+    private boolean isUpdate;
+
 
     private List<Goods> goodsList;
     private List<Order> orders;
@@ -88,6 +86,7 @@ public class AddDataActivity extends AppCompatActivity {
         data = getIntent();
         if (data != null) {
             table = data.getStringExtra(Unit.TABLE_EXTRA);
+            isUpdate = data.getBooleanExtra(Unit.UPDATE_EXTRA, false);
         }
 
         goodsList = new ArrayList<>();
@@ -107,13 +106,11 @@ public class AddDataActivity extends AppCompatActivity {
                 break;
 
             case Unit.Delivery.TABLE_NAME:
-
                 setActivityDelivery();
                 break;
 
             case Unit.Goods.TABLE_NAME:
                 setActivityGoods();
-
                 break;
 
             case Unit.Orders.TABLE_NAME:
@@ -148,7 +145,7 @@ public class AddDataActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (data.getBooleanExtra(Unit.UPDATE_EXTRA, false)) {
+        if (isUpdate) {
             getMenuInflater().inflate(R.menu.update_menu, menu);
             return true;
         }
@@ -237,7 +234,7 @@ public class AddDataActivity extends AppCompatActivity {
 
         final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
 
-        if (data.getBooleanExtra(Unit.UPDATE_EXTRA, false)) {
+        if (isUpdate) {
             invalidateOptionsMenu();
 
             String goodsId = m.get(Unit.Carts._GOODS_ID);
@@ -246,48 +243,11 @@ public class AddDataActivity extends AppCompatActivity {
 
             quantityEditText.setText(quantity);
 
-//            addDataButton.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    int goodsIndex = goodsSpinner.getSelectedItemPosition();
-//                    String goodsId = goodsList.get(goodsIndex).getId();
-//
-//                    int orderIndex = orderSpinner.getSelectedItemPosition();
-//                    String orderId = orders.get(orderIndex).getId();
-//
-//                    String quantity = quantityEditText.getText().toString().trim();
-//
-//                    Cart cart = new Cart(m.get(Unit._ID), goodsId, quantity, orderId);
-//
-//                    cartDB.update(cart);
-//                }
-//            });
-
             setList(new Goods(), goodsList, goodsSpinner, Unit.Goods.URL_GET_ALL, goodsId);
             setList(new Order(), orders, orderSpinner, Unit.Orders.URL_GET_ALL, orderId);
         } else {
             setList(new Goods(), goodsList, goodsSpinner, Unit.Goods.URL_GET_ALL, null);
             setList(new Order(), orders, orderSpinner, Unit.Orders.URL_GET_ALL, null);
-
-            /*addDataButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int goodsIndex = goodsSpinner.getSelectedItemPosition();
-                    String goodsId = goodsList.get(goodsIndex).getId();
-
-                    int orderIndex = orderSpinner.getSelectedItemPosition();
-                    String orderId = orders.get(orderIndex).getId();
-
-                    String quantity = quantityEditText.getText().toString().trim();
-
-                    Cart cart = new Cart();
-                    cart.setGoodsId(goodsId);
-                    cart.setOrderId(orderId);
-                    cart.setQuantity(quantity);
-
-                    cartDB.create(cart);
-                }
-            });*/
         }
 
         addDataButton.setOnClickListener(new View.OnClickListener() {
@@ -301,14 +261,9 @@ public class AddDataActivity extends AppCompatActivity {
 
                 String quantity = quantityEditText.getText().toString().trim();
 
-                Cart cart = new Cart();
-                if (data.getBooleanExtra(Unit.UPDATE_EXTRA, false))
+                Cart cart = new Cart(null, goodsId, quantity, orderId);
+                if (isUpdate) {
                     cart.setId(m.get(Unit._ID));
-                cart.setGoodsId(goodsId);
-                cart.setOrderId(orderId);
-                cart.setQuantity(quantity);
-
-                if (data.getBooleanExtra(Unit.UPDATE_EXTRA, false)) {
                     cartDB.update(cart);
                 } else {
                     cartDB.create(cart);
@@ -330,8 +285,7 @@ public class AddDataActivity extends AppCompatActivity {
 
         final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
 
-        if (data.getBooleanExtra(Unit.UPDATE_EXTRA, false)) {
-
+        if (isUpdate) {
             String firstName = m.get(Unit.Clients._FIRST_NAME);
             String lastName = m.get(Unit.Clients._LAST_NAME);
             String middleName = m.get(Unit.Clients._MIDDLE_NAME);
@@ -346,22 +300,14 @@ public class AddDataActivity extends AppCompatActivity {
         addDataButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 String firstName = firstNameEditText.getText().toString().trim();
                 String lastName = lastNameEditText.getText().toString().trim();
                 String middleName = middleNameEditText.getText().toString().trim();
                 String discount = discountEditText.getText().toString().trim();
 
-                Client client = new Client();
-                if (data.getBooleanExtra(Unit.UPDATE_EXTRA, false)) {
+                Client client = new Client(null, firstName, lastName, middleName, discount);
+                if (isUpdate) {
                     client.setId(m.get(Unit._ID));
-                }
-                client.setFirstName(firstName);
-                client.setLastName(lastName);
-                client.setMiddleName(middleName);
-                client.setDiscount(discount);
-                if (data.getBooleanExtra(Unit.UPDATE_EXTRA, false)) {
                     clientDB.update(client);
                 } else {
                     clientDB.create(client);
@@ -380,7 +326,27 @@ public class AddDataActivity extends AppCompatActivity {
         final TextInputEditText datetimeEditText = findViewById(R.id.dateTimeEditText);
         orderSpinner = findViewById(R.id.orderSpinner);
 
-        setList(new Order(), orders, orderSpinner, Unit.Orders.URL_GET_ALL, null);
+        if(isUpdate) {
+            HashMap<String, String> m
+                    = (HashMap<String, String>) data.getSerializableExtra("data");
+
+            addressEditText.setText(m.get(Unit.Delivery._ADDRESS));
+
+            String delivered = m.get(Unit.Delivery._DELIVERED);
+
+            if(delivered.equals("1"))
+                deliveredCheckBox.setSelected(true);
+            else
+                deliveredCheckBox.setSelected(false);
+
+            datetimeEditText.setText(m.get(Unit.Delivery._DATE_TIME));
+
+            String orderId = m.get(Unit.Delivery._ORDER_ID);
+
+            setList(new Order(), orders, orderSpinner, Unit.Orders.URL_GET_ALL, orderId);
+        } else {
+            setList(new Order(), orders, orderSpinner, Unit.Orders.URL_GET_ALL, null);
+        }
 
         addDataButton = findViewById(R.id.addDataButton);
         addDataButton.setOnClickListener(new View.OnClickListener() {
@@ -396,7 +362,12 @@ public class AddDataActivity extends AppCompatActivity {
                 Delivery delivery =
                         new Delivery(null, address, delivered, datetime, orderId);
 
-                deliveryDB.create(delivery);
+                if(isUpdate) {
+                    delivery.setId(data.getStringExtra(Unit._ID));
+                    deliveryDB.update(delivery);
+                } else {
+                    deliveryDB.create(delivery);
+                }
             }
         });
     }
@@ -412,7 +383,18 @@ public class AddDataActivity extends AppCompatActivity {
                 = findViewById(R.id.quantityInStockEditText);
         final TextInputEditText descriptionEditText = findViewById(R.id.descriptionEditText);
 
-        setList(new TypeOfGoods(), typesOfGoods, typesOfGoodsSpinner, Unit.TypesOfGoods.URL_GET_ALL, null);
+        final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
+
+        if(isUpdate) {
+            nameEditText.setText(m.get(Unit.Goods._NAME));
+            quantityInStockEditText.setText(m.get(Unit.Goods._QUANTITY_IN_STOCK));
+            descriptionEditText.setText(m.get(Unit.Goods._DESCRIPTION));
+
+            String typeId = m.get(Unit.Goods._TYPE_ID);
+            setList(new TypeOfGoods(), typesOfGoods, typesOfGoodsSpinner, Unit.TypesOfGoods.URL_GET_ALL, typeId);
+        } else {
+            setList(new TypeOfGoods(), typesOfGoods, typesOfGoodsSpinner, Unit.TypesOfGoods.URL_GET_ALL, null);
+        }
 
         addDataButton = findViewById(R.id.addDataButton);
         addDataButton.setOnClickListener(new View.OnClickListener() {
@@ -430,7 +412,12 @@ public class AddDataActivity extends AppCompatActivity {
                 Goods goods
                         = new Goods(null, name, typeId, quantityInStock, description);
 
-                goodsDB.create(goods);
+                if(isUpdate) {
+                    goods.setId(m.get(Unit._ID));
+                    goodsDB.update(goods);
+                } else {
+                    goodsDB.create(goods);
+                }
             }
         });
     }

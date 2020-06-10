@@ -18,21 +18,30 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsViewHol
 
     private Context context;
     private List<Goods> goods;
+    private View view;
+    private CartAdapter.OnClickListener onClickListener;
 
     public GoodsAdapter(Context context, List<Goods> goods) {
         this.context = context;
         this.goods = goods;
     }
 
+    public void setOnClickListener(CartAdapter.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
+    }
+
     @NonNull
     @Override
     public GoodsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_goods, parent, false);
+
+        this.view = view;
+
         return new GoodsViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GoodsViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull GoodsViewHolder holder, final int position) {
         Goods goodsItem = goods.get(position);
 
         holder.idTextView.setText(goodsItem.getId());
@@ -40,6 +49,13 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.GoodsViewHol
         holder.typeIdTextView.setText(goodsItem.getTypeId());
         holder.quantityInStockTextView.setText(goodsItem.getQuantityInStock());
         holder.descriptionTextView.setText(goodsItem.getDescription());
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickListener.onClick(position);
+            }
+        });
     }
 
     @Override

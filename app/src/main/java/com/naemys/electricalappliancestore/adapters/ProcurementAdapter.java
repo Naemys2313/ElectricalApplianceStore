@@ -19,20 +19,30 @@ public class ProcurementAdapter extends RecyclerView.Adapter<ProcurementAdapter.
     private Context context;
     private List<Procurement> procurements;
 
+    private View view;
+    private CartAdapter.OnClickListener onClickListener;
+
     public ProcurementAdapter(Context context, List<Procurement> procurements) {
         this.context = context;
         this.procurements = procurements;
+    }
+
+    public void setOnClickListener(CartAdapter.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
     }
 
     @NonNull
     @Override
     public ProcurementViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_procurement, parent, false);
+
+        this.view = view;
+
         return new ProcurementViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ProcurementViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ProcurementViewHolder holder, final int position) {
         Procurement procurement = procurements.get(position);
 
         holder.idTextView.setText(procurement.getId());
@@ -40,6 +50,12 @@ public class ProcurementAdapter extends RecyclerView.Adapter<ProcurementAdapter.
         holder.supplierIdTextView.setText(procurement.getSupplierId());
         holder.priceTextView.setText(procurement.getPrice());
 
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickListener.onClick(position);
+            }
+        });
     }
 
     @Override
@@ -58,9 +74,6 @@ public class ProcurementAdapter extends RecyclerView.Adapter<ProcurementAdapter.
             goodsIdTextView = itemView.findViewById(R.id.goodsIdTextView);
             supplierIdTextView = itemView.findViewById(R.id.supplierIdTextView);
             priceTextView = itemView.findViewById(R.id.priceTextView);
-
-
-
         }
     }
 }

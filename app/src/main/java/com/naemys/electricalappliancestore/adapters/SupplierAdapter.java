@@ -19,20 +19,30 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.Suppli
     private Context context;
     private List<Supplier> suppliers;
 
+    private View view;
+    private CartAdapter.OnClickListener onClickListener;
+
     public SupplierAdapter(Context context, List<Supplier> suppliers) {
         this.context = context;
         this.suppliers = suppliers;
+    }
+
+    public void setOnClickListener(CartAdapter.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
     }
 
     @NonNull
     @Override
     public SupplierViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_supplier, parent, false);
+
+        this.view = view;
+
         return new SupplierViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SupplierViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SupplierViewHolder holder, final int position) {
         Supplier sale = suppliers.get(position);
 
         holder.idTextView.setText(sale.getId());
@@ -40,6 +50,13 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.Suppli
         holder.lastNameTextView.setText(sale.getLastName());
         holder.middleNameTextView.setText(sale.getMiddleName());
         holder.phoneTextView.setText(sale.getPhone());
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickListener.onClick(position);
+            }
+        });
 
     }
 

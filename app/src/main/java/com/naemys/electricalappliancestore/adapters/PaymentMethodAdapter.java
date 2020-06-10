@@ -19,24 +19,41 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
     private Context context;
     private List<PaymentMethod> paymentMethods;
 
+    private View view;
+    private CartAdapter.OnClickListener onClickListener;
+
     public PaymentMethodAdapter(Context context, List<PaymentMethod> paymentMethods) {
         this.context = context;
         this.paymentMethods = paymentMethods;
+    }
+
+    public void setOnClickListener(CartAdapter.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
     }
 
     @NonNull
     @Override
     public PaymentMethodViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_payment_method, parent, false);
+
+        this.view = view;
+
         return new PaymentMethodViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PaymentMethodViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PaymentMethodViewHolder holder, final int position) {
         PaymentMethod paymentMethod = paymentMethods.get(position);
 
         holder.idTextView.setText(paymentMethod.getId());
         holder.nameTextView.setText(paymentMethod.getName());
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickListener.onClick(position);
+            }
+        });
     }
 
     @Override

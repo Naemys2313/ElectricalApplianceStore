@@ -34,9 +34,19 @@ import com.naemys.electricalappliancestore.database.SupplierDB;
 import com.naemys.electricalappliancestore.database.TypeOfGoodsDB;
 import com.naemys.electricalappliancestore.models.Cart;
 import com.naemys.electricalappliancestore.models.Client;
+import com.naemys.electricalappliancestore.models.Delivery;
+import com.naemys.electricalappliancestore.models.Goods;
 import com.naemys.electricalappliancestore.models.Model;
+import com.naemys.electricalappliancestore.models.Order;
+import com.naemys.electricalappliancestore.models.PaymentMethod;
+import com.naemys.electricalappliancestore.models.Procurement;
+import com.naemys.electricalappliancestore.models.Review;
+import com.naemys.electricalappliancestore.models.Sale;
+import com.naemys.electricalappliancestore.models.Supplier;
+import com.naemys.electricalappliancestore.models.TypeOfGoods;
 import com.naemys.electricalappliancestore.units.Unit;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -110,6 +120,14 @@ public class AllDataTable extends AppCompatActivity {
 
                 case Unit.Delivery.TABLE_NAME:
                     DeliveryAdapter deliveryAdapter = new DeliveryAdapter(this, list);
+                    deliveryAdapter.setOnClickListener(new CartAdapter.OnClickListener() {
+                        @Override
+                        public void onClick(int position) {
+                            Delivery delivery = (Delivery) list.get(position);
+
+                            updateData(delivery);
+                        }
+                    });
                     attachAdapter(deliveryAdapter);
 
                     DeliveryDB deliveryDB =
@@ -120,6 +138,14 @@ public class AllDataTable extends AppCompatActivity {
 
                 case Unit.Goods.TABLE_NAME:
                     GoodsAdapter goodsAdapter = new GoodsAdapter(this, list);
+                    goodsAdapter.setOnClickListener(new CartAdapter.OnClickListener() {
+                        @Override
+                        public void onClick(int position) {
+                            Goods goods = (Goods) list.get(position);
+
+                            updateData(goods);
+                        }
+                    });
                     attachAdapter(goodsAdapter);
 
                     GoodsDB goodsDB =
@@ -130,6 +156,14 @@ public class AllDataTable extends AppCompatActivity {
 
                 case Unit.Orders.TABLE_NAME:
                     OrderAdapter orderAdapter = new OrderAdapter(this, list);
+                    orderAdapter.setOnClickListener(new CartAdapter.OnClickListener() {
+                        @Override
+                        public void onClick(int position) {
+                            Order order = (Order) list.get(position);
+
+                            updateData(order);
+                        }
+                    });
                     attachAdapter(orderAdapter);
 
                     OrderDB orderDB =
@@ -140,6 +174,14 @@ public class AllDataTable extends AppCompatActivity {
 
                 case Unit.PaymentMethods.TABLE_NAME:
                     PaymentMethodAdapter paymentMethodAdapter = new PaymentMethodAdapter(this, list);
+                    paymentMethodAdapter.setOnClickListener(new CartAdapter.OnClickListener() {
+                        @Override
+                        public void onClick(int position) {
+                            PaymentMethod paymentMethod = (PaymentMethod) list.get(position);
+
+                            updateData(paymentMethod);
+                        }
+                    });
                     attachAdapter(paymentMethodAdapter);
 
                     PaymentMethodDB paymentMethodDB =
@@ -150,6 +192,14 @@ public class AllDataTable extends AppCompatActivity {
 
                 case Unit.Procurement.TABLE_NAME:
                     ProcurementAdapter procurementAdapter = new ProcurementAdapter(this, list);
+                    procurementAdapter.setOnClickListener(new CartAdapter.OnClickListener() {
+                        @Override
+                        public void onClick(int position) {
+                            Procurement procurement = (Procurement) list.get(position);
+
+                            updateData(procurement);
+                        }
+                    });
                     attachAdapter(procurementAdapter);
 
                     ProcurementDB procurementDB =
@@ -160,6 +210,14 @@ public class AllDataTable extends AppCompatActivity {
 
                 case Unit.Reviews.TABLE_NAME:
                     ReviewAdapter reviewAdapter = new ReviewAdapter(this, list);
+                    reviewAdapter.setOnClickListener(new CartAdapter.OnClickListener() {
+                        @Override
+                        public void onClick(int position) {
+                            Review review = (Review) list.get(position);
+
+                            updateData(review);
+                        }
+                    });
                     attachAdapter(reviewAdapter);
 
                     ReviewDB reviewDB =
@@ -170,6 +228,14 @@ public class AllDataTable extends AppCompatActivity {
 
                 case Unit.Sale.TABLE_NAME:
                     SaleAdapter saleAdapter = new SaleAdapter(this, list);
+                    saleAdapter.setOnClickListener(new CartAdapter.OnClickListener() {
+                        @Override
+                        public void onClick(int position) {
+                            Sale sale = (Sale) list.get(position);
+
+                            updateData(sale);
+                        }
+                    });
                     attachAdapter(saleAdapter);
 
                     SaleDB saleDB = new SaleDB(this, list, recyclerAdapter, requestQueue);
@@ -179,6 +245,14 @@ public class AllDataTable extends AppCompatActivity {
 
                 case Unit.Suppliers.TABLE_NAME:
                     SupplierAdapter supplierAdapter = new SupplierAdapter(this, list);
+                    supplierAdapter.setOnClickListener(new CartAdapter.OnClickListener() {
+                        @Override
+                        public void onClick(int position) {
+                            Supplier supplier = (Supplier) list.get(position);
+
+                            updateData(supplier);
+                        }
+                    });
                     attachAdapter(supplierAdapter);
 
                     SupplierDB supplierDB =
@@ -189,6 +263,14 @@ public class AllDataTable extends AppCompatActivity {
 
                 case Unit.TypesOfGoods.TABLE_NAME:
                     TypeOfGoodsAdapter typeOfGoodsAdapter = new TypeOfGoodsAdapter(this, list);
+                    typeOfGoodsAdapter.setOnClickListener(new CartAdapter.OnClickListener() {
+                        @Override
+                        public void onClick(int position) {
+                            TypeOfGoods typeOfGoods = (TypeOfGoods) list.get(position);
+
+                            updateData(typeOfGoods);
+                        }
+                    });
                     attachAdapter(typeOfGoodsAdapter);
 
                     TypeOfGoodsDB typeOfGoodsDB =

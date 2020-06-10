@@ -19,20 +19,30 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     private Context context;
     private List<Order> orders;
 
+    private View view;
+    private CartAdapter.OnClickListener onClickListener;
+
     public OrderAdapter(Context context, List<Order> orders) {
         this.context = context;
         this.orders = orders;
+    }
+
+    public void setOnClickListener(CartAdapter.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
     }
 
     @NonNull
     @Override
     public OrderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_order, parent, false);
+
+        this.view = view;
+
         return new OrderViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull OrderViewHolder holder, final int position) {
         Order order = orders.get(position);
 
         holder.idTextView.setText(order.getId());
@@ -41,6 +51,12 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         holder.dateTimeTextView.setText(order.getDateTime());
         holder.clientIdTextView.setText(order.getClientId());
 
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickListener.onClick(position);
+            }
+        });
     }
 
     @Override
