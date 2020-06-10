@@ -3,9 +3,17 @@ package com.naemys.electricalappliancestore.units;
 public class Unit {
 
     public static final String TABLE_EXTRA = "table";
+    public static final String UPDATE_EXTRA = "update";
+    public static final String POSITION_EXTRA = "position";
+    public static final String DATA_EXTRA = "data";
+    public static final String INSERT_ID_EXTRA = "insert_id";
+
+    public static final int ADD_CODE_REQUEST = 1;
+    public static final int UPDATE_CODE_REQUEST = 2;
+    public static final int DELETE_CODE_REQUEST = 3;
+
 
     public static final String _ID = "id";
-    public static final String UPDATE_EXTRA = "update";
 
     public static final String URL_SIGN_UP = "https://elecronicapplicatestore.000webhostapp.com/sign/sign_up.php";
     public static final String URL_SIGN_IN = "https://elecronicapplicatestore.000webhostapp.com/sign/sign_in.php";

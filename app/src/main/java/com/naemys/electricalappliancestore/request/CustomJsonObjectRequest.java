@@ -33,13 +33,13 @@ public class CustomJsonObjectRequest extends JsonObjectRequest {
                     if(response.getInt("success") == 1) {
                         JSONArray jsonArray = response.getJSONArray(model.getTableName());
 
+
                         for(int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
                             Map<String, String> m = toMap(jsonObject);
 
                             list.add(model.fromMap(m));
 
-                            Log.d("asdasd", list.toString());
 
                             adapter.notifyDataSetChanged();
                         }

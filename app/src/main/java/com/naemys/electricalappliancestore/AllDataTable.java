@@ -1,5 +1,6 @@
 package com.naemys.electricalappliancestore;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -63,6 +64,8 @@ public class AllDataTable extends AppCompatActivity {
 
     private String table;
 
+    private int position;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,7 +91,7 @@ public class AllDataTable extends AppCompatActivity {
                         @Override
                         public void onClick(int position) {
                             Cart cart = (Cart) list.get(position);
-                            updateData(cart);
+                            updateData(cart, position);
                         }
                     });
 
@@ -106,7 +109,7 @@ public class AllDataTable extends AppCompatActivity {
                         public void onClick(int position) {
                             Client client = (Client) list.get(position);
 
-                            updateData(client);
+                            updateData(client, position);
                         }
                     });
 
@@ -125,7 +128,7 @@ public class AllDataTable extends AppCompatActivity {
                         public void onClick(int position) {
                             Delivery delivery = (Delivery) list.get(position);
 
-                            updateData(delivery);
+                            updateData(delivery, position);
                         }
                     });
                     attachAdapter(deliveryAdapter);
@@ -143,7 +146,7 @@ public class AllDataTable extends AppCompatActivity {
                         public void onClick(int position) {
                             Goods goods = (Goods) list.get(position);
 
-                            updateData(goods);
+                            updateData(goods, position);
                         }
                     });
                     attachAdapter(goodsAdapter);
@@ -161,7 +164,7 @@ public class AllDataTable extends AppCompatActivity {
                         public void onClick(int position) {
                             Order order = (Order) list.get(position);
 
-                            updateData(order);
+                            updateData(order, position);
                         }
                     });
                     attachAdapter(orderAdapter);
@@ -179,7 +182,7 @@ public class AllDataTable extends AppCompatActivity {
                         public void onClick(int position) {
                             PaymentMethod paymentMethod = (PaymentMethod) list.get(position);
 
-                            updateData(paymentMethod);
+                            updateData(paymentMethod, position);
                         }
                     });
                     attachAdapter(paymentMethodAdapter);
@@ -197,7 +200,7 @@ public class AllDataTable extends AppCompatActivity {
                         public void onClick(int position) {
                             Procurement procurement = (Procurement) list.get(position);
 
-                            updateData(procurement);
+                            updateData(procurement, position);
                         }
                     });
                     attachAdapter(procurementAdapter);
@@ -215,7 +218,7 @@ public class AllDataTable extends AppCompatActivity {
                         public void onClick(int position) {
                             Review review = (Review) list.get(position);
 
-                            updateData(review);
+                            updateData(review, position);
                         }
                     });
                     attachAdapter(reviewAdapter);
@@ -233,7 +236,7 @@ public class AllDataTable extends AppCompatActivity {
                         public void onClick(int position) {
                             Sale sale = (Sale) list.get(position);
 
-                            updateData(sale);
+                            updateData(sale, position);
                         }
                     });
                     attachAdapter(saleAdapter);
@@ -250,7 +253,7 @@ public class AllDataTable extends AppCompatActivity {
                         public void onClick(int position) {
                             Supplier supplier = (Supplier) list.get(position);
 
-                            updateData(supplier);
+                            updateData(supplier, position);
                         }
                     });
                     attachAdapter(supplierAdapter);
@@ -268,7 +271,7 @@ public class AllDataTable extends AppCompatActivity {
                         public void onClick(int position) {
                             TypeOfGoods typeOfGoods = (TypeOfGoods) list.get(position);
 
-                            updateData(typeOfGoods);
+                            updateData(typeOfGoods, position);
                         }
                     });
                     attachAdapter(typeOfGoodsAdapter);
@@ -288,12 +291,14 @@ public class AllDataTable extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void updateData(Model model) {
+    private void updateData(Model model, int position) {
         Intent intent = new Intent(AllDataTable.this, AddDataActivity.class);
         intent.putExtra(Unit.TABLE_EXTRA, table);
         intent.putExtra(Unit.UPDATE_EXTRA, true);
 
-        HashMap<String, String> m = (HashMap)model.toMap(true);
+        this.position = position;
+
+        HashMap<String, String> m = (HashMap) model.toMap(true);
         intent.putExtra("data", m);
 
         startActivity(intent);
@@ -306,5 +311,31 @@ public class AllDataTable extends AppCompatActivity {
 
         dataRecyclerView.setAdapter(recyclerAdapter);
         dataRecyclerView.setLayoutManager(layoutManager);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+
+
+        HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra(Unit.DATA_EXTRA);
+
+        switch (requestCode) {
+            case Unit.ADD_CODE_REQUEST:
+
+                break;
+
+            case Unit.UPDATE_CODE_REQUEST:
+
+                break;
+
+            case Unit.DELETE_CODE_REQUEST:
+
+                break;
+        }
     }
 }
