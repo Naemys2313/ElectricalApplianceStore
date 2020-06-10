@@ -288,18 +288,6 @@ public class AllDataTable extends AppCompatActivity {
         startActivity(intent);
     }
 
-    /*public void updateData(Cart cart) {
-        Intent intent = new Intent(AllDataTable.this, AddDataActivity.class);
-        intent.putExtra(Unit.TABLE_EXTRA, table);
-        intent.putExtra(Unit.UPDATE_EXTRA, true);
-        intent.putExtra(Unit._ID, cart.getId());
-        intent.putExtra(Unit.Carts._ORDER_ID, cart.getOrderId());
-        intent.putExtra(Unit.Carts._QUANTITY, cart.getQuantity());
-        intent.putExtra(Unit.Carts._GOODS_ID, cart.getGoodsId());
-
-        startActivity(intent);
-    }*/
-
     private void updateData(Model model) {
         Intent intent = new Intent(AllDataTable.this, AddDataActivity.class);
         intent.putExtra(Unit.TABLE_EXTRA, table);

@@ -154,9 +154,68 @@ public class AddDataActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.deleteItemMenu) {
-            CartDB cartDB = new CartDB(this, requestQueue);
-            cartDB.delete(data.getStringExtra(Unit._ID));
+        if (item.getItemId() != R.id.deleteItemMenu) {
+            return false;
+        }
+
+        final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
+
+        switch (table) {
+            case Unit.Carts.TABLE_NAME:
+                CartDB cartDB = new CartDB(this, requestQueue);
+                cartDB.delete(m.get(Unit._ID));
+                break;
+
+            case Unit.Clients.TABLE_NAME:
+                ClientDB clientDB = new ClientDB(this, requestQueue);
+                clientDB.delete(m.get(Unit._ID));
+                break;
+
+            case Unit.Delivery.TABLE_NAME:
+                DeliveryDB deliveryDB = new DeliveryDB(this, requestQueue);
+                deliveryDB.delete(m.get(Unit._ID));
+                break;
+
+            case Unit.Goods.TABLE_NAME:
+                GoodsDB goodsDB = new GoodsDB(this, requestQueue);
+                goodsDB.delete(m.get(Unit._ID));
+                break;
+
+            case Unit.Orders.TABLE_NAME:
+                OrderDB orderDB = new OrderDB(this, requestQueue);
+                orderDB.delete(m.get(Unit._ID));
+                break;
+
+            case Unit.PaymentMethods.TABLE_NAME:
+                PaymentMethodDB paymentMethodDB = new PaymentMethodDB(this, requestQueue);
+                paymentMethodDB.delete(m.get(Unit._ID));
+                break;
+
+            case Unit.Procurement.TABLE_NAME:
+                ProcurementDB procurementDB = new ProcurementDB(this, requestQueue);
+                procurementDB.delete(m.get(Unit._ID));
+                break;
+
+            case Unit.Reviews.TABLE_NAME:
+                ReviewDB reviewDB = new ReviewDB(this, requestQueue);
+                reviewDB.delete(m.get(Unit._ID));
+                break;
+
+            case Unit.Sale.TABLE_NAME:
+                SaleDB saleDB = new SaleDB(this, requestQueue);
+                saleDB.delete(m.get(Unit._ID));
+                break;
+
+            case Unit.Suppliers.TABLE_NAME:
+                SupplierDB supplierDB = new SupplierDB(this, requestQueue);
+                supplierDB.delete(m.get(Unit._ID));
+                break;
+
+            case Unit.TypesOfGoods.TABLE_NAME:
+                TypeOfGoodsDB typeOfGoodsDB = new TypeOfGoodsDB(this, requestQueue);
+                typeOfGoodsDB.delete(m.get(Unit._ID));
+                break;
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -330,14 +389,14 @@ public class AddDataActivity extends AppCompatActivity {
         final HashMap<String, String> m
                 = (HashMap<String, String>) data.getSerializableExtra("data");
 
-        if(isUpdate) {
+        if (isUpdate) {
             invalidateOptionsMenu();
 
             addressEditText.setText(m.get(Unit.Delivery._ADDRESS));
 
             String delivered = m.get(Unit.Delivery._DELIVERED);
 
-            if(delivered.equals("1"))
+            if (delivered.equals("1"))
                 deliveredCheckBox.setChecked(true);
             else
                 deliveredCheckBox.setChecked(false);
@@ -365,7 +424,7 @@ public class AddDataActivity extends AppCompatActivity {
                 Delivery delivery =
                         new Delivery(null, address, delivered, datetime, orderId);
 
-                if(isUpdate) {
+                if (isUpdate) {
                     delivery.setId(m.get(Unit._ID));
                     deliveryDB.update(delivery);
                 } else {
@@ -388,7 +447,7 @@ public class AddDataActivity extends AppCompatActivity {
 
         final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
 
-        if(isUpdate) {
+        if (isUpdate) {
             invalidateOptionsMenu();
 
             nameEditText.setText(m.get(Unit.Goods._NAME));
@@ -417,7 +476,7 @@ public class AddDataActivity extends AppCompatActivity {
                 Goods goods
                         = new Goods(null, name, typeId, quantityInStock, description);
 
-                if(isUpdate) {
+                if (isUpdate) {
                     goods.setId(m.get(Unit._ID));
                     goodsDB.update(goods);
                 } else {
@@ -438,7 +497,7 @@ public class AddDataActivity extends AppCompatActivity {
         final TextInputEditText dateTimeEditText = findViewById(R.id.dateTimeEditText);
 
         final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
-        if(isUpdate) {
+        if (isUpdate) {
             invalidateOptionsMenu();
 
             dateTimeEditText.setText(m.get(Unit.Orders._DATE_TIME));
@@ -447,7 +506,7 @@ public class AddDataActivity extends AppCompatActivity {
 
             Log.d(AddDataActivity.class.getSimpleName(), "setActivityOrder: " + paid);
 
-            if(paid.equals("1")) {
+            if (paid.equals("1")) {
                 paidCheckBox.setChecked(true);
             } else {
                 paidCheckBox.setChecked(false);
@@ -477,7 +536,7 @@ public class AddDataActivity extends AppCompatActivity {
                 String datetime = dateTimeEditText.getText().toString().trim();
 
                 Order order = new Order(null, clientId, paymentMethodId, paid, datetime);
-                if(isUpdate) {
+                if (isUpdate) {
                     order.setId(m.get(Unit._ID));
                     orderDB.update(order);
                 } else {
@@ -495,7 +554,7 @@ public class AddDataActivity extends AppCompatActivity {
         final TextInputEditText nameEditText = findViewById(R.id.nameEditText);
 
         final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
-        if(isUpdate) {
+        if (isUpdate) {
             invalidateOptionsMenu();
 
             nameEditText.setText(m.get(Unit.PaymentMethods._NAME));
@@ -509,7 +568,7 @@ public class AddDataActivity extends AppCompatActivity {
 
                 PaymentMethod paymentMethod = new PaymentMethod(null, name);
 
-                if(isUpdate) {
+                if (isUpdate) {
                     paymentMethod.setId(m.get(Unit._ID));
                     paymentMethodDB.update(paymentMethod);
                 } else {
@@ -530,7 +589,7 @@ public class AddDataActivity extends AppCompatActivity {
 
         final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
 
-        if(isUpdate) {
+        if (isUpdate) {
             invalidateOptionsMenu();
 
             priceEditText.setText(m.get(Unit.Procurement._PRICE));
@@ -559,7 +618,7 @@ public class AddDataActivity extends AppCompatActivity {
 
                 Procurement procurement = new Procurement(null, goodsId, supplierId, price);
 
-                if(isUpdate) {
+                if (isUpdate) {
                     procurement.setId(m.get(Unit._ID));
                     procurementDB.update(procurement);
                 } else {
@@ -582,7 +641,7 @@ public class AddDataActivity extends AppCompatActivity {
 
         final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
 
-        if(isUpdate) {
+        if (isUpdate) {
             invalidateOptionsMenu();
 
             reviewTextEditText.setText(m.get(Unit.Reviews._REVIEW_TEXT));
@@ -612,7 +671,7 @@ public class AddDataActivity extends AppCompatActivity {
                 String rating = ratingEditText.getText().toString().trim();
 
                 Review review = new Review(null, goodsId, clientId, reviewText, rating);
-                if(isUpdate) {
+                if (isUpdate) {
                     review.setId(m.get(Unit._ID));
                     reviewDB.update(review);
                 } else {
@@ -633,7 +692,7 @@ public class AddDataActivity extends AppCompatActivity {
 
         final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
 
-        if(isUpdate) {
+        if (isUpdate) {
             invalidateOptionsMenu();
 
             priceEditText.setText(m.get(Unit.Sale._PRICE));
@@ -657,7 +716,7 @@ public class AddDataActivity extends AppCompatActivity {
                 String discount = discountEditText.getText().toString().trim();
 
                 Sale sale = new Sale(null, goodsId, price, discount);
-                if(isUpdate) {
+                if (isUpdate) {
                     sale.setId(m.get(Unit._ID));
                     saleDB.update(sale);
                 } else {
@@ -679,7 +738,7 @@ public class AddDataActivity extends AppCompatActivity {
 
         final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
 
-        if(isUpdate) {
+        if (isUpdate) {
             invalidateOptionsMenu();
 
             firstNameEditText.setText(m.get(Unit.Suppliers._FIRST_NAME));
@@ -698,11 +757,12 @@ public class AddDataActivity extends AppCompatActivity {
                 String phone = phoneEditText.getText().toString().trim();
 
                 Supplier supplier = new Supplier(null, firstName, lastName, middleName, phone);
-                if(isUpdate) {
+                if (isUpdate) {
                     supplier.setId(m.get(Unit._ID));
                     supplierDB.update(supplier);
                 } else {
-                    supplierDB.create(supplier); }
+                    supplierDB.create(supplier);
+                }
             }
         });
     }
@@ -716,7 +776,7 @@ public class AddDataActivity extends AppCompatActivity {
 
         final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
 
-        if(isUpdate) {
+        if (isUpdate) {
             invalidateOptionsMenu();
 
             nameEditText.setText(m.get(Unit.TypesOfGoods._NAME));
@@ -729,7 +789,7 @@ public class AddDataActivity extends AppCompatActivity {
                 String name = nameEditText.getText().toString().trim();
 
                 TypeOfGoods typeOfGoods = new TypeOfGoods(null, name);
-                if(isUpdate) {
+                if (isUpdate) {
                     typeOfGoods.setId(m.get(Unit._ID));
                     typeOfGoodsDB.update(typeOfGoods);
                 } else {
