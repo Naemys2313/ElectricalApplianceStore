@@ -488,6 +488,11 @@ public class AddDataActivity extends AppCompatActivity {
 
         final TextInputEditText nameEditText = findViewById(R.id.nameEditText);
 
+        final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
+        if(isUpdate) {
+            nameEditText.setText(m.get(Unit.PaymentMethods._NAME));
+        }
+
         addDataButton = findViewById(R.id.addDataButton);
         addDataButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -496,7 +501,12 @@ public class AddDataActivity extends AppCompatActivity {
 
                 PaymentMethod paymentMethod = new PaymentMethod(null, name);
 
-                paymentMethodDB.create(paymentMethod);
+                if(isUpdate) {
+                    paymentMethod.setId(m.get(Unit._ID));
+                    paymentMethodDB.update(paymentMethod);
+                } else {
+                    paymentMethodDB.create(paymentMethod);
+                }
             }
         });
     }
@@ -510,8 +520,20 @@ public class AddDataActivity extends AppCompatActivity {
         final Spinner suppliersSpinner = findViewById(R.id.suppliersSpinner);
         final TextInputEditText priceEditText = findViewById(R.id.priceEditText);
 
-        setList(new Goods(), goodsList, goodsSpinner, Unit.Goods.URL_GET_ALL, null);
-        setList(new Supplier(), suppliers, suppliersSpinner, Unit.Suppliers.URL_GET_ALL, null);
+        final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
+
+        if(isUpdate) {
+            priceEditText.setText(m.get(Unit.Procurement._PRICE));
+
+            String goodsId = m.get(Unit.Procurement._GOODS_ID);
+            String supplierId = m.get(Unit.Procurement._SUPPLIER_ID);
+
+            setList(new Goods(), goodsList, goodsSpinner, Unit.Goods.URL_GET_ALL, goodsId);
+            setList(new Supplier(), suppliers, suppliersSpinner, Unit.Suppliers.URL_GET_ALL, supplierId);
+        } else {
+            setList(new Goods(), goodsList, goodsSpinner, Unit.Goods.URL_GET_ALL, null);
+            setList(new Supplier(), suppliers, suppliersSpinner, Unit.Suppliers.URL_GET_ALL, null);
+        }
 
         addDataButton = findViewById(R.id.addDataButton);
         addDataButton.setOnClickListener(new View.OnClickListener() {
@@ -527,7 +549,12 @@ public class AddDataActivity extends AppCompatActivity {
 
                 Procurement procurement = new Procurement(null, goodsId, supplierId, price);
 
-                procurementDB.create(procurement);
+                if(isUpdate) {
+                    procurement.setId(m.get(Unit._ID));
+                    procurementDB.update(procurement);
+                } else {
+                    procurementDB.create(procurement);
+                }
             }
         });
 
