@@ -71,8 +71,6 @@ public class AddDataActivity extends AppCompatActivity {
     private List<PaymentMethod> paymentMethods;
     private List<Supplier> suppliers;
 
-    private Spinner goodsSpinner, orderSpinner, typesOfGoodsSpinner;
-
     private Intent data;
 
     private Button addDataButton;
@@ -227,8 +225,8 @@ public class AddDataActivity extends AppCompatActivity {
 
         final CartDB cartDB = new CartDB(this, requestQueue);
 
-        goodsSpinner = findViewById(R.id.goodsSpinner);
-        orderSpinner = findViewById(R.id.orderSpinner);
+        final Spinner goodsSpinner = findViewById(R.id.goodsSpinner);
+        final Spinner orderSpinner = findViewById(R.id.orderSpinner);
 
         final TextInputEditText quantityEditText = findViewById(R.id.quantityEditText);
         addDataButton = findViewById(R.id.addDataButton);
@@ -287,6 +285,8 @@ public class AddDataActivity extends AppCompatActivity {
         final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
 
         if (isUpdate) {
+            invalidateOptionsMenu();
+
             String firstName = m.get(Unit.Clients._FIRST_NAME);
             String lastName = m.get(Unit.Clients._LAST_NAME);
             String middleName = m.get(Unit.Clients._MIDDLE_NAME);
@@ -325,11 +325,13 @@ public class AddDataActivity extends AppCompatActivity {
         final TextInputEditText addressEditText = findViewById(R.id.addressEditText);
         final CheckBox deliveredCheckBox = findViewById(R.id.deliveredCheckBox);
         final TextInputEditText datetimeEditText = findViewById(R.id.dateTimeEditText);
-        orderSpinner = findViewById(R.id.orderSpinner);
+        final Spinner orderSpinner = findViewById(R.id.orderSpinner);
+
+        final HashMap<String, String> m
+                = (HashMap<String, String>) data.getSerializableExtra("data");
 
         if(isUpdate) {
-            HashMap<String, String> m
-                    = (HashMap<String, String>) data.getSerializableExtra("data");
+            invalidateOptionsMenu();
 
             addressEditText.setText(m.get(Unit.Delivery._ADDRESS));
 
@@ -364,7 +366,7 @@ public class AddDataActivity extends AppCompatActivity {
                         new Delivery(null, address, delivered, datetime, orderId);
 
                 if(isUpdate) {
-                    delivery.setId(data.getStringExtra(Unit._ID));
+                    delivery.setId(m.get(Unit._ID));
                     deliveryDB.update(delivery);
                 } else {
                     deliveryDB.create(delivery);
@@ -379,7 +381,7 @@ public class AddDataActivity extends AppCompatActivity {
         final GoodsDB goodsDB = new GoodsDB(this, requestQueue);
 
         final TextInputEditText nameEditText = findViewById(R.id.nameEditText);
-        typesOfGoodsSpinner = findViewById(R.id.typesOfGoodsSpinner);
+        final Spinner typesOfGoodsSpinner = findViewById(R.id.typesOfGoodsSpinner);
         final TextInputEditText quantityInStockEditText
                 = findViewById(R.id.quantityInStockEditText);
         final TextInputEditText descriptionEditText = findViewById(R.id.descriptionEditText);
@@ -387,6 +389,8 @@ public class AddDataActivity extends AppCompatActivity {
         final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
 
         if(isUpdate) {
+            invalidateOptionsMenu();
+
             nameEditText.setText(m.get(Unit.Goods._NAME));
             quantityInStockEditText.setText(m.get(Unit.Goods._QUANTITY_IN_STOCK));
             descriptionEditText.setText(m.get(Unit.Goods._DESCRIPTION));
@@ -435,6 +439,8 @@ public class AddDataActivity extends AppCompatActivity {
 
         final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
         if(isUpdate) {
+            invalidateOptionsMenu();
+
             dateTimeEditText.setText(m.get(Unit.Orders._DATE_TIME));
 
             String paid = m.get(Unit.Orders._PAID);
@@ -490,6 +496,8 @@ public class AddDataActivity extends AppCompatActivity {
 
         final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
         if(isUpdate) {
+            invalidateOptionsMenu();
+
             nameEditText.setText(m.get(Unit.PaymentMethods._NAME));
         }
 
@@ -523,6 +531,8 @@ public class AddDataActivity extends AppCompatActivity {
         final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
 
         if(isUpdate) {
+            invalidateOptionsMenu();
+
             priceEditText.setText(m.get(Unit.Procurement._PRICE));
 
             String goodsId = m.get(Unit.Procurement._GOODS_ID);
@@ -573,6 +583,8 @@ public class AddDataActivity extends AppCompatActivity {
         final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
 
         if(isUpdate) {
+            invalidateOptionsMenu();
+
             reviewTextEditText.setText(m.get(Unit.Reviews._REVIEW_TEXT));
             ratingEditText.setText(m.get(Unit.Reviews._RATING));
 
@@ -619,7 +631,20 @@ public class AddDataActivity extends AppCompatActivity {
         final TextInputEditText priceEditText = findViewById(R.id.priceEditText);
         final TextInputEditText discountEditText = findViewById(R.id.discountEditText);
 
-        setList(new Goods(), goodsList, goodsSpinner, Unit.Goods.URL_GET_ALL, null);
+        final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
+
+        if(isUpdate) {
+            invalidateOptionsMenu();
+
+            priceEditText.setText(m.get(Unit.Sale._PRICE));
+            discountEditText.setText(m.get(Unit.Sale._DISCOUNT));
+
+            String goodsId = m.get(Unit.Sale._GOODS_ID);
+
+            setList(new Goods(), goodsList, goodsSpinner, Unit.Goods.URL_GET_ALL, goodsId);
+        } else {
+            setList(new Goods(), goodsList, goodsSpinner, Unit.Goods.URL_GET_ALL, null);
+        }
 
         addDataButton = findViewById(R.id.addDataButton);
         addDataButton.setOnClickListener(new View.OnClickListener() {
@@ -632,8 +657,12 @@ public class AddDataActivity extends AppCompatActivity {
                 String discount = discountEditText.getText().toString().trim();
 
                 Sale sale = new Sale(null, goodsId, price, discount);
-
-                saleDB.create(sale);
+                if(isUpdate) {
+                    sale.setId(m.get(Unit._ID));
+                    saleDB.update(sale);
+                } else {
+                    saleDB.create(sale);
+                }
             }
         });
     }
@@ -651,6 +680,8 @@ public class AddDataActivity extends AppCompatActivity {
         final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
 
         if(isUpdate) {
+            invalidateOptionsMenu();
+
             firstNameEditText.setText(m.get(Unit.Suppliers._FIRST_NAME));
             lastNameEditText.setText(m.get(Unit.Suppliers._LAST_NAME));
             middleNameEditText.setText(m.get(Unit.Suppliers._MIDDLE_NAME));
@@ -683,6 +714,14 @@ public class AddDataActivity extends AppCompatActivity {
 
         final TextInputEditText nameEditText = findViewById(R.id.nameEditText);
 
+        final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
+
+        if(isUpdate) {
+            invalidateOptionsMenu();
+
+            nameEditText.setText(m.get(Unit.TypesOfGoods._NAME));
+        }
+
         addDataButton = findViewById(R.id.addDataButton);
         addDataButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -690,8 +729,12 @@ public class AddDataActivity extends AppCompatActivity {
                 String name = nameEditText.getText().toString().trim();
 
                 TypeOfGoods typeOfGoods = new TypeOfGoods(null, name);
-
-                typeOfGoodsDB.create(typeOfGoods);
+                if(isUpdate) {
+                    typeOfGoods.setId(m.get(Unit._ID));
+                    typeOfGoodsDB.update(typeOfGoods);
+                } else {
+                    typeOfGoodsDB.create(typeOfGoods);
+                }
             }
         });
     }
