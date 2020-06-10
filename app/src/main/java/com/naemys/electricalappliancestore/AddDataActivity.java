@@ -570,8 +570,21 @@ public class AddDataActivity extends AppCompatActivity {
         final TextInputEditText reviewTextEditText = findViewById(R.id.reviewTextEditText);
         final TextInputEditText ratingEditText = findViewById(R.id.ratingEditText);
 
-        setList(new Goods(), goodsList, goodsSpinner, Unit.Goods.URL_GET_ALL, null);
-        setList(new Client(), clients, clientsSpinner, Unit.Clients.URL_GET_ALL, null);
+        final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
+
+        if(isUpdate) {
+            reviewTextEditText.setText(m.get(Unit.Reviews._REVIEW_TEXT));
+            ratingEditText.setText(m.get(Unit.Reviews._RATING));
+
+            String goodsId = m.get(Unit.Reviews._GOODS_ID);
+            String clientId = m.get(Unit.Reviews._CLIENT_ID);
+
+            setList(new Goods(), goodsList, goodsSpinner, Unit.Goods.URL_GET_ALL, goodsId);
+            setList(new Client(), clients, clientsSpinner, Unit.Clients.URL_GET_ALL, clientId);
+        } else {
+            setList(new Goods(), goodsList, goodsSpinner, Unit.Goods.URL_GET_ALL, null);
+            setList(new Client(), clients, clientsSpinner, Unit.Clients.URL_GET_ALL, null);
+        }
 
         addDataButton = findViewById(R.id.addDataButton);
         addDataButton.setOnClickListener(new View.OnClickListener() {
@@ -587,11 +600,14 @@ public class AddDataActivity extends AppCompatActivity {
                 String rating = ratingEditText.getText().toString().trim();
 
                 Review review = new Review(null, goodsId, clientId, reviewText, rating);
-
-                reviewDB.create(review);
+                if(isUpdate) {
+                    review.setId(m.get(Unit._ID));
+                    reviewDB.update(review);
+                } else {
+                    reviewDB.create(review);
+                }
             }
         });
-
     }
 
     private void setActivitySale() {
@@ -632,6 +648,15 @@ public class AddDataActivity extends AppCompatActivity {
         final TextInputEditText middleNameEditText = findViewById(R.id.middleNameEditText);
         final TextInputEditText phoneEditText = findViewById(R.id.phoneEditText);
 
+        final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
+
+        if(isUpdate) {
+            firstNameEditText.setText(m.get(Unit.Suppliers._FIRST_NAME));
+            lastNameEditText.setText(m.get(Unit.Suppliers._LAST_NAME));
+            middleNameEditText.setText(m.get(Unit.Suppliers._MIDDLE_NAME));
+            phoneEditText.setText(m.get(Unit.Suppliers._PHONE));
+        }
+
         addDataButton = findViewById(R.id.addDataButton);
         addDataButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -642,11 +667,13 @@ public class AddDataActivity extends AppCompatActivity {
                 String phone = phoneEditText.getText().toString().trim();
 
                 Supplier supplier = new Supplier(null, firstName, lastName, middleName, phone);
-
-                supplierDB.create(supplier);
+                if(isUpdate) {
+                    supplier.setId(m.get(Unit._ID));
+                    supplierDB.update(supplier);
+                } else {
+                    supplierDB.create(supplier); }
             }
         });
-
     }
 
     private void setActivityTypeOfGoods() {
@@ -667,9 +694,5 @@ public class AddDataActivity extends AppCompatActivity {
                 typeOfGoodsDB.create(typeOfGoods);
             }
         });
-    }
-
-    private void getCart() {
-
     }
 }
