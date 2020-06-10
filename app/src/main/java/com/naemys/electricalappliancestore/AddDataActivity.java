@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -335,9 +336,9 @@ public class AddDataActivity extends AppCompatActivity {
             String delivered = m.get(Unit.Delivery._DELIVERED);
 
             if(delivered.equals("1"))
-                deliveredCheckBox.setSelected(true);
+                deliveredCheckBox.setChecked(true);
             else
-                deliveredCheckBox.setSelected(false);
+                deliveredCheckBox.setChecked(false);
 
             datetimeEditText.setText(m.get(Unit.Delivery._DATE_TIME));
 
@@ -432,8 +433,29 @@ public class AddDataActivity extends AppCompatActivity {
         final CheckBox paidCheckBox = findViewById(R.id.paidCheckBox);
         final TextInputEditText dateTimeEditText = findViewById(R.id.dateTimeEditText);
 
-        setList(new Client(), clients, clientsSpinner, Unit.Clients.URL_GET_ALL, null);
-        setList(new PaymentMethod(), paymentMethods, paymentMethodsSpinner, Unit.PaymentMethods.URL_GET_ALL, null);
+        final HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra("data");
+        if(isUpdate) {
+            dateTimeEditText.setText(m.get(Unit.Orders._DATE_TIME));
+
+            String paid = m.get(Unit.Orders._PAID);
+
+            Log.d(AddDataActivity.class.getSimpleName(), "setActivityOrder: " + paid);
+
+            if(paid.equals("1")) {
+                paidCheckBox.setChecked(true);
+            } else {
+                paidCheckBox.setChecked(false);
+            }
+
+            String clientId = m.get(Unit.Orders._CLIENT_ID);
+            String paymentMethodId = m.get(Unit.Orders._PAYMENT_METHOD_ID);
+
+            setList(new Client(), clients, clientsSpinner, Unit.Clients.URL_GET_ALL, clientId);
+            setList(new PaymentMethod(), paymentMethods, paymentMethodsSpinner, Unit.PaymentMethods.URL_GET_ALL, paymentMethodId);
+        } else {
+            setList(new Client(), clients, clientsSpinner, Unit.Clients.URL_GET_ALL, null);
+            setList(new PaymentMethod(), paymentMethods, paymentMethodsSpinner, Unit.PaymentMethods.URL_GET_ALL, null);
+        }
 
         addDataButton = findViewById(R.id.addDataButton);
         addDataButton.setOnClickListener(new View.OnClickListener() {
@@ -449,7 +471,12 @@ public class AddDataActivity extends AppCompatActivity {
                 String datetime = dateTimeEditText.getText().toString().trim();
 
                 Order order = new Order(null, clientId, paymentMethodId, paid, datetime);
-                orderDB.create(order);
+                if(isUpdate) {
+                    order.setId(m.get(Unit._ID));
+                    orderDB.update(order);
+                } else {
+                    orderDB.create(order);
+                }
             }
         });
     }
