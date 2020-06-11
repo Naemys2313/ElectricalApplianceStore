@@ -62,6 +62,11 @@ public class TypeOfGoodsAdapter extends RecyclerView.Adapter<TypeOfGoodsAdapter.
         return typesOfGoods.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
     public static class TypeOfGoodsViewHolder extends RecyclerView.ViewHolder {
 
         TextView idTextView, nameTextView;

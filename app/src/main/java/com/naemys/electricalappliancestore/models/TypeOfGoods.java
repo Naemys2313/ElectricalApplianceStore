@@ -48,7 +48,8 @@ public class TypeOfGoods extends Model<TypeOfGoods> {
         Map<String, String> m = new HashMap<>();
         if(withId)
             m.put(Unit._ID, getId());
-        m.put(Unit.TypesOfGoods._NAME, getName());
+        if(getName() != null)
+            m.put(Unit.TypesOfGoods._NAME, getName());
 
         return m;
     }

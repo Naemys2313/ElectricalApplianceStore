@@ -80,10 +80,14 @@ public class Delivery extends Model<Delivery> {
         Map<String, String> m = new HashMap<>();
         if(withId)
             m.put(Unit._ID, getId());
-        m.put(Unit.Delivery._ADDRESS, getAddress());
-        m.put(Unit.Delivery._DELIVERED, getDelivered());
-        m.put(Unit.Delivery._DATE_TIME, getDateTime());
-        m.put(Unit.Delivery._ORDER_ID, getOrderId());
+        if(getAddress() != null)
+            m.put(Unit.Delivery._ADDRESS, getAddress());
+        if(getDelivered() != null)
+            m.put(Unit.Delivery._DELIVERED, getDelivered());
+        if(getDateTime() != null)
+            m.put(Unit.Delivery._DATE_TIME, getDateTime());
+        if(getOrderId() != null)
+            m.put(Unit.Delivery._ORDER_ID, getOrderId());
 
         return m;
     }

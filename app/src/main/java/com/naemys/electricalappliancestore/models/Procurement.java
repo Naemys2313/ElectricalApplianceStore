@@ -69,9 +69,12 @@ public class Procurement extends Model<Procurement> {
         Map<String, String> m = new HashMap<>();
         if(withId)
             m.put(Unit._ID, getId());
-        m.put(Unit.Procurement._GOODS_ID, getGoodsId());
-        m.put(Unit.Procurement._SUPPLIER_ID, getSupplierId());
-        m.put(Unit.Procurement._PRICE, getPrice());
+        if(getGoodsId() != null)
+            m.put(Unit.Procurement._GOODS_ID, getGoodsId());
+        if(getSupplierId() != null)
+            m.put(Unit.Procurement._SUPPLIER_ID, getSupplierId());
+        if(getPrice() != null)
+            m.put(Unit.Procurement._PRICE, getPrice());
 
         return m;
     }

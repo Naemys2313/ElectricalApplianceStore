@@ -77,10 +77,14 @@ public class Goods extends Model<Goods> {
         Map<String, String> m = new HashMap<>();
         if(withId)
             m.put(Unit._ID, getId());
-        m.put(Unit.Goods._NAME, getName());
-        m.put(Unit.Goods._TYPE_ID, getTypeId());
-        m.put(Unit.Goods._QUANTITY_IN_STOCK, getQuantityInStock());
-        m.put(Unit.Goods._DESCRIPTION, getDescription());
+        if(getName() != null)
+            m.put(Unit.Goods._NAME, getName());
+        if(getTypeId() != null)
+            m.put(Unit.Goods._TYPE_ID, getTypeId());
+        if(getQuantityInStock() != null)
+            m.put(Unit.Goods._QUANTITY_IN_STOCK, getQuantityInStock());
+        if(getDescription() != null)
+            m.put(Unit.Goods._DESCRIPTION, getDescription());
 
         return m;
     }

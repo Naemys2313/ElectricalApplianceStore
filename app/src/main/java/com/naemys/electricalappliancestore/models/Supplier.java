@@ -79,10 +79,14 @@ public class Supplier extends Model<Supplier> {
         Map<String, String> m = new HashMap<>();
         if(withId)
             m.put(Unit._ID, getId());
-        m.put(Unit.Suppliers._FIRST_NAME, getFirstName());
-        m.put(Unit.Suppliers._LAST_NAME, getLastName());
-        m.put(Unit.Suppliers._MIDDLE_NAME, getMiddleName());
-        m.put(Unit.Suppliers._PHONE, getPhone());
+        if(getFirstName() != null)
+            m.put(Unit.Suppliers._FIRST_NAME, getFirstName());
+        if(getLastName() != null)
+            m.put(Unit.Suppliers._LAST_NAME, getLastName());
+        if(getMiddleName() != null)
+            m.put(Unit.Suppliers._MIDDLE_NAME, getMiddleName());
+        if(getPhone() != null)
+            m.put(Unit.Suppliers._PHONE, getPhone());
 
         return m;
     }

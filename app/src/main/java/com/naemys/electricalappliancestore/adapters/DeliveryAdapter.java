@@ -64,6 +64,11 @@ public class DeliveryAdapter extends RecyclerView.Adapter<DeliveryAdapter.Delive
         return deliveries.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
     public static class DeliveryViewHolder extends RecyclerView.ViewHolder {
 
         TextView idTextView, addressTextView, deliveredTextView, dateTimeTextView, orderIdTextView;

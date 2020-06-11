@@ -79,10 +79,14 @@ public class Review extends Model<Review> {
         Map<String, String> m = new HashMap<>();
         if(withId)
             m.put(Unit._ID, getId());
-        m.put(Unit.Reviews._CLIENT_ID, getClientId());
-        m.put(Unit.Reviews._GOODS_ID, getGoodsId());
-        m.put(Unit.Reviews._REVIEW_TEXT, getReviewText());
-        m.put(Unit.Reviews._RATING, getRating());
+        if(getClientId() != null)
+            m.put(Unit.Reviews._CLIENT_ID, getClientId());
+        if(getGoodsId() != null)
+            m.put(Unit.Reviews._GOODS_ID, getGoodsId());
+        if(getReviewText() != null)
+            m.put(Unit.Reviews._REVIEW_TEXT, getReviewText());
+        if(getRating() != null)
+            m.put(Unit.Reviews._RATING, getRating());
 
         return m;
     }

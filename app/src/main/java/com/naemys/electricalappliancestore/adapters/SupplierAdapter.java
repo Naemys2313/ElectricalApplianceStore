@@ -65,6 +65,11 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.Suppli
         return suppliers.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
     public static class SupplierViewHolder extends RecyclerView.ViewHolder {
 
         TextView idTextView, firstNameTextView, lastNameTextView, middleNameTextView, phoneTextView;

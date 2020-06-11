@@ -78,10 +78,14 @@ public class Order extends Model<Order> {
         Map<String, String> m = new HashMap<>();
         if(withId)
             m.put(Unit._ID, getId());
-        m.put(Unit.Orders._CLIENT_ID, getClientId());
-        m.put(Unit.Orders._PAYMENT_METHOD_ID, getPaymentMethodId());
-        m.put(Unit.Orders._PAID, getPaid());
-        m.put(Unit.Orders._DATE_TIME, getDateTime());
+        if(getClientId() != null)
+            m.put(Unit.Orders._CLIENT_ID, getClientId());
+        if(getPaymentMethodId() != null)
+            m.put(Unit.Orders._PAYMENT_METHOD_ID, getPaymentMethodId());
+        if(getPaid() != null)
+            m.put(Unit.Orders._PAID, getPaid());
+        if(getDateTime() != null)
+            m.put(Unit.Orders._DATE_TIME, getDateTime());
 
         return m;
     }

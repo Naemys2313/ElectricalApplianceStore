@@ -64,6 +64,11 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
         return clients.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
     public static class ClientViewHolder extends RecyclerView.ViewHolder {
         TextView idTextView, firstNameTextView, lastNameTextView, middleNameTextView, discountTextView;
 

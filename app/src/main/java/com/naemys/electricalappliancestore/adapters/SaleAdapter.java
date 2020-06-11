@@ -63,6 +63,11 @@ public class SaleAdapter extends RecyclerView.Adapter<SaleAdapter.SaleViewHolder
         return sales.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
     public static class SaleViewHolder extends RecyclerView.ViewHolder {
 
         TextView idTextView, goodsIdTextView, priceTextView, discountTextView;

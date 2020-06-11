@@ -64,6 +64,11 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         return reviews.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
     public static class ReviewViewHolder extends RecyclerView.ViewHolder {
 
         TextView idTextView, goodsIdTextView, clientIdTextView, reviewTextTextView, ratingTextView;

@@ -49,7 +49,8 @@ public class PaymentMethod extends Model<PaymentMethod> {
         Map<String, String> m = new HashMap<>();
         if(withId)
             m.put(Unit._ID, getId());
-        m.put(Unit.PaymentMethods._NAME, getName());
+        if(getName() != null)
+            m.put(Unit.PaymentMethods._NAME, getName());
 
         return m;
     }

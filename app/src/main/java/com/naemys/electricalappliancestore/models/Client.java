@@ -78,10 +78,14 @@ public class Client extends Model<Client> {
         Map<String, String> m = new HashMap<>();
         if(withId)
             m.put(Unit._ID, getId());
-        m.put(Unit.Clients._FIRST_NAME, getFirstName());
-        m.put(Unit.Clients._LAST_NAME, getLastName());
-        m.put(Unit.Clients._MIDDLE_NAME, getMiddleName());
-        m.put(Unit.Clients._DISCOUNT, getDiscount());
+        if(getFirstName() != null)
+            m.put(Unit.Clients._FIRST_NAME, getFirstName());
+        if(getLastName() != null)
+            m.put(Unit.Clients._LAST_NAME, getLastName());
+        if(getMiddleName() != null)
+            m.put(Unit.Clients._MIDDLE_NAME, getMiddleName());
+        if(getDiscount() != null)
+            m.put(Unit.Clients._DISCOUNT, getDiscount());
 
         return m;
     }

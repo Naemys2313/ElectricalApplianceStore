@@ -69,9 +69,12 @@ public class Sale extends Model<Sale> {
         Map<String, String> m = new HashMap<>();
         if(withId)
             m.put(Unit._ID, getId());
-        m.put(Unit.Sale._GOODS_ID, getGoodsId());
-        m.put(Unit.Sale._PRICE, getPrice());
-        m.put(Unit.Sale._DISCOUNT, getDiscount());
+        if(getGoodsId() != null)
+            m.put(Unit.Sale._GOODS_ID, getGoodsId());
+        if(getPrice() != null)
+            m.put(Unit.Sale._PRICE, getPrice());
+        if(getDiscount() != null)
+            m.put(Unit.Sale._DISCOUNT, getDiscount());
 
         return m;
     }

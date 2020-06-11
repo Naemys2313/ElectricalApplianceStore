@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.android.volley.RequestQueue;
@@ -55,12 +56,13 @@ import java.util.Map;
 
 public class AllDataTable extends AppCompatActivity {
 
+    private static final String TAG = AllDataTable.class.getSimpleName();
     private RequestQueue requestQueue;
 
     private RecyclerView dataRecyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView.Adapter recyclerAdapter;
-    private List list;
+    private ArrayList list;
 
     private String table;
 
@@ -323,7 +325,9 @@ public class AllDataTable extends AppCompatActivity {
 
         HashMap<String, Model> m = (HashMap<String, Model>) data.getSerializableExtra(Unit.DATA_EXTRA);
 
-        Model model = m.get(Unit.DATA_EXTRA);
+        Model model = null;
+        if(m != null)
+            model = m.get(Unit.DATA_EXTRA);
 
         switch (requestCode) {
             case Unit.ADD_CODE_REQUEST:

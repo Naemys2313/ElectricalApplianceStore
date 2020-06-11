@@ -63,6 +63,11 @@ public class ProcurementAdapter extends RecyclerView.Adapter<ProcurementAdapter.
         return procurements.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
     public static class ProcurementViewHolder extends RecyclerView.ViewHolder {
 
         TextView idTextView, goodsIdTextView, supplierIdTextView, priceTextView;

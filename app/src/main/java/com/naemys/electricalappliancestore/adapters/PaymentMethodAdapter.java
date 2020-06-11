@@ -61,6 +61,11 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
         return paymentMethods.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
     public static class PaymentMethodViewHolder extends RecyclerView.ViewHolder {
 
         TextView idTextView, nameTextView;

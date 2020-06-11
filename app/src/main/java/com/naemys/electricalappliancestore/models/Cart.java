@@ -71,9 +71,12 @@ public class Cart extends Model<Cart> {
         Map<String, String> m = new HashMap<>();
         if(withId)
             m.put(Unit._ID, getId());
-        m.put(Unit.Carts._ORDER_ID, getOrderId());
-        m.put(Unit.Carts._QUANTITY, getQuantity());
-        m.put(Unit.Carts._GOODS_ID, getGoodsId());
+        if(getOrderId() != null)
+            m.put(Unit.Carts._ORDER_ID, getOrderId());
+        if(getQuantity() != null)
+            m.put(Unit.Carts._QUANTITY, getQuantity());
+        if(getGoodsId() != null)
+            m.put(Unit.Carts._GOODS_ID, getGoodsId());
         return m;
     }
 

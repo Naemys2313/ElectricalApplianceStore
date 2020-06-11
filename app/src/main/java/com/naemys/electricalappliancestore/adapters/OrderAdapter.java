@@ -64,6 +64,11 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         return orders.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
     public static class OrderViewHolder extends RecyclerView.ViewHolder {
 
         TextView idTextView, clientIdTextView, paymentMethodIdTextView, paidTextView, dateTimeTextView;
