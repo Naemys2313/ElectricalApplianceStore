@@ -35,7 +35,7 @@ public class TypeOfGoodsAdapter extends RecyclerView.Adapter<TypeOfGoodsAdapter.
     @NonNull
     @Override
     public TypeOfGoodsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_type_of_goods, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_type_of_goods, parent, false);
 
         this.view = view;
 

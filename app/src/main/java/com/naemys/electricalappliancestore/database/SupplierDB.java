@@ -32,6 +32,9 @@ public class SupplierDB extends Database<Supplier> {
     }
 
     public void delete(String id) {
-        super.delete(Unit.Suppliers.URL_DELETE, id);
+        Supplier supplier = new Supplier();
+        supplier.setId(id);
+
+        super.delete(Unit.Suppliers.URL_DELETE, supplier);
     }
 }

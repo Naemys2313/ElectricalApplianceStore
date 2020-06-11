@@ -34,7 +34,7 @@ public class DeliveryAdapter extends RecyclerView.Adapter<DeliveryAdapter.Delive
     @NonNull
     @Override
     public DeliveryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_delivery, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_delivery, parent, false);
 
         this.view = view;
 

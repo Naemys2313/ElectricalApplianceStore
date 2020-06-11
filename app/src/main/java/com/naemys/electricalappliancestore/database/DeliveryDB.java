@@ -32,6 +32,9 @@ public class DeliveryDB extends Database<Delivery> {
     }
 
     public void delete(String id) {
-        super.delete(Unit.Delivery.URL_DELETE, id);
+        Delivery delivery = new Delivery();
+        delivery.setId(id);
+
+        super.delete(Unit.Delivery.URL_DELETE, delivery);
     }
 }

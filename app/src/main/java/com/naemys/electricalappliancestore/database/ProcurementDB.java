@@ -32,6 +32,9 @@ public class ProcurementDB extends Database<Procurement> {
     }
 
     public void delete(String id) {
-        super.delete(Unit.Procurement.URL_DELETE, id);
+        Procurement procurement = new Procurement();
+        procurement.setId(id);
+
+        super.delete(Unit.Procurement.URL_DELETE, procurement);
     }
 }

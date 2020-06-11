@@ -32,6 +32,8 @@ public class SaleDB extends Database<Sale> {
     }
 
     public void delete(String id) {
-        super.delete(Unit.Sale.URL_DELETE, id);
+        Sale sale = new Sale();
+        sale.setId(id);
+        super.delete(Unit.Sale.URL_DELETE, sale);
     }
 }

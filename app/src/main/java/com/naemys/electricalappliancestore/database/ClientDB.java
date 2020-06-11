@@ -32,6 +32,9 @@ public class ClientDB extends Database<Client> {
     }
 
     public void delete(String id) {
-        super.delete(Unit.Clients.URL_DELETE, id);
+        Client client = new Client();
+        client.setId(id);
+
+        super.delete(Unit.Clients.URL_DELETE, client);
     }
 }

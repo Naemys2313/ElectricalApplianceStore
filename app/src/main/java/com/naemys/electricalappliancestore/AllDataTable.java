@@ -288,7 +288,7 @@ public class AllDataTable extends AppCompatActivity {
     public void addData(View view) {
         Intent intent = new Intent(AllDataTable.this, AddDataActivity.class);
         intent.putExtra(Unit.TABLE_EXTRA, table);
-        startActivity(intent);
+        startActivityForResult(intent, Unit.ADD_CODE_REQUEST);
     }
 
     private void updateData(Model model, int position) {
@@ -301,7 +301,7 @@ public class AllDataTable extends AppCompatActivity {
         HashMap<String, String> m = (HashMap) model.toMap(true);
         intent.putExtra("data", m);
 
-        startActivity(intent);
+        startActivityForResult(intent, Unit.UPDATE_CODE_REQUEST);
     }
 
     private void attachAdapter(RecyclerView.Adapter recyclerAdapter) {
@@ -309,8 +309,8 @@ public class AllDataTable extends AppCompatActivity {
 
         layoutManager = new LinearLayoutManager(this);
 
-        dataRecyclerView.setAdapter(recyclerAdapter);
         dataRecyclerView.setLayoutManager(layoutManager);
+        dataRecyclerView.setAdapter(recyclerAdapter);
     }
 
     @Override
@@ -321,19 +321,27 @@ public class AllDataTable extends AppCompatActivity {
             return;
         }
 
+        HashMap<String, Model> m = (HashMap<String, Model>) data.getSerializableExtra(Unit.DATA_EXTRA);
 
-        HashMap<String, String> m = (HashMap<String, String>) data.getSerializableExtra(Unit.DATA_EXTRA);
+        Model model = m.get(Unit.DATA_EXTRA);
 
         switch (requestCode) {
             case Unit.ADD_CODE_REQUEST:
+                model.setId(data.getStringExtra(Unit._ID));
 
+                list.add(model);
+
+                recyclerAdapter.notifyDataSetChanged();
                 break;
 
             case Unit.UPDATE_CODE_REQUEST:
 
-                break;
+                if(data.getBooleanExtra(Unit.UPDATE_EXTRA, true))
+                    list.set(position, model);
+                else
+                    list.remove(position);
 
-            case Unit.DELETE_CODE_REQUEST:
+                recyclerAdapter.notifyDataSetChanged();
 
                 break;
         }

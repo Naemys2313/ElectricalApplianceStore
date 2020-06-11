@@ -47,7 +47,7 @@ abstract class Database<T> {
         CustomJsonStringRequest stringRequest = new CustomJsonStringRequest(
                 context,
                 url,
-                model.toMap(false),
+                model,
                 Unit.ADD_CODE_REQUEST
         );
 
@@ -58,21 +58,18 @@ abstract class Database<T> {
         CustomJsonStringRequest stringRequest = new CustomJsonStringRequest(
                 context,
                 url,
-                model.toMap(true),
+                model,
                 Unit.UPDATE_CODE_REQUEST
         );
 
         requestQueue.add(stringRequest);
     }
 
-    void delete(String url, String id) {
-        Map<String, String> m = new HashMap<>();
-        m.put(Unit._ID, id);
-
+    void delete(String url, Model model) {
         CustomJsonStringRequest stringRequest = new CustomJsonStringRequest(
                 context,
                 url,
-                m,
+                model,
                 Unit.DELETE_CODE_REQUEST
         );
 

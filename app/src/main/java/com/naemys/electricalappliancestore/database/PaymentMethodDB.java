@@ -32,6 +32,9 @@ public class PaymentMethodDB extends Database<PaymentMethod> {
     }
 
     public void delete(String id) {
-        super.delete(Unit.PaymentMethods.URL_DELETE, id);
+        PaymentMethod paymentMethod = new PaymentMethod();
+        paymentMethod.setId(id);
+
+        super.delete(Unit.PaymentMethods.URL_DELETE, paymentMethod);
     }
 }

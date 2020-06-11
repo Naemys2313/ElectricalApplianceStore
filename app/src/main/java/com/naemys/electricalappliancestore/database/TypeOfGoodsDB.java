@@ -32,6 +32,9 @@ public class TypeOfGoodsDB extends Database<TypeOfGoods> {
     }
 
     public void delete(String id) {
-        super.delete(Unit.TypesOfGoods.URL_DELETE, id);
+        TypeOfGoods typeOfGoods = new TypeOfGoods();
+        typeOfGoods.setId(id);
+
+        super.delete(Unit.TypesOfGoods.URL_DELETE, typeOfGoods);
     }
 }

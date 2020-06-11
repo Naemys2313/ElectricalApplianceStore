@@ -32,6 +32,9 @@ public class ReviewDB extends Database<Review> {
     }
 
     public void delete(String id) {
-        super.delete(Unit.Reviews.URL_DELETE, id);
+        Review review = new Review();
+        review.setId(id);
+
+        super.delete(Unit.Reviews.URL_DELETE, review);
     }
 }

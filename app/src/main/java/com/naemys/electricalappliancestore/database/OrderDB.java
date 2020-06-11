@@ -32,6 +32,9 @@ public class OrderDB extends Database<Order> {
     }
 
     public void delete(String id) {
-        super.delete(Unit.Orders.URL_DELETE, id);
+        Order order = new Order();
+        order.setId(id);
+
+        super.delete(Unit.Orders.URL_DELETE, order);
     }
 }

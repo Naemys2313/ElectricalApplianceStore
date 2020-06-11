@@ -34,7 +34,7 @@ public class ProcurementAdapter extends RecyclerView.Adapter<ProcurementAdapter.
     @NonNull
     @Override
     public ProcurementViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_procurement, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_procurement, parent, false);
 
         this.view = view;
 

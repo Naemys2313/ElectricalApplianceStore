@@ -32,6 +32,9 @@ public class CartDB extends Database<Cart> {
     }
 
     public void delete(String id) {
-        super.delete(Unit.Carts.URL_DELETE, id);
+        Cart cart = new Cart();
+        cart.setId(id);
+
+        super.delete(Unit.Carts.URL_DELETE, cart);
     }
 }
